@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/memory_bank
 /.pnp
 .pnp.*
 .yarn/*
