@@ -10,6 +10,8 @@ export interface User {
   number_message_sent: number
   notifications_enabled: boolean
   profile_picture_url?: string
+  created_at: Date
+  updated_at: Date
   deleted_at?: Date
 }
 
@@ -74,7 +76,7 @@ export enum UserEventRole {
 }
 
 export interface Message {
-  id: number
+  id: string
   id_event: string
   id_user: string
   time: Date
@@ -86,4 +88,32 @@ export interface Location {
   latitude: number
   longitude: number
   name?: string
+}
+
+// Types pour l'authentification
+export interface AuthUser {
+  uid: string
+  email: string
+  displayName?: string
+}
+
+export interface AuthContextType {
+  user: AuthUser | null
+  loading: boolean
+  error: string | null
+  login: (email: string, password: string) => Promise<void>
+  register: (email: string, password: string, name: string) => Promise<void>
+  logout: () => Promise<void>
+}
+
+// Types pour les formulaires
+export interface RegisterFormData {
+  email: string
+  password: string
+  name: string
+}
+
+export interface LoginFormData {
+  email: string
+  password: string
 }
