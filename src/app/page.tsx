@@ -1,95 +1,119 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+
+import { useState } from 'react'
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main style={{ 
+      minHeight: '100vh', 
+      padding: '2rem', 
+      fontFamily: 'system-ui, sans-serif' 
+    }}>
+      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <header style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '1rem' }}>
+            TeamUp
+          </h1>
+          <p style={{ fontSize: '1.2rem', color: '#666' }}>
+            Plateforme communautaire pour événements sportifs de proximité
+          </p>
+        </header>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+        <FirebaseTest />
+      </div>
+    </main>
+  )
+}
+
+function FirebaseTest() {
+  const [testResult, setTestResult] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  const testFirebase = async () => {
+    setIsLoading(true)
+    setTestResult('Test en cours...')
+
+    try {
+      const { auth, db, storage } = await import('@/lib/firebase')
+      
+      let results = []
+      
+      // Test Auth
+      if (auth) {
+        results.push('✅ Firebase Auth: Connecté')
+      } else {
+        results.push('❌ Firebase Auth: Échec')
+      }
+
+      // Test Firestore
+      if (db) {
+        results.push('✅ Firebase Firestore: Connecté')
+      } else {
+        results.push('❌ Firebase Firestore: Échec')
+      }
+
+      // Test Storage
+      if (storage) {
+        results.push('✅ Firebase Storage: Connecté')
+        results.push(`   📁 Bucket: ${storage.app.options.storageBucket}`)
+      } else {
+        results.push('❌ Firebase Storage: Échec')
+      }
+
+      // Test Messaging
+      try {
+        const { messaging } = await import('@/lib/firebase')
+        const messagingInstance = await messaging()
+        if (messagingInstance) {
+          results.push('✅ Firebase Messaging: Connecté')
+        } else {
+          results.push('⚠️ Firebase Messaging: Non supporté (normal en dev)')
+        }
+      } catch (error) {
+        results.push('⚠️ Firebase Messaging: Non disponible')
+      }
+
+      setTestResult(results.join('\n'))
+
+    } catch (error) {
+      setTestResult(`❌ Erreur de connexion Firebase: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
+    }
+
+    setIsLoading(false)
+  }
+
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <button
+        onClick={testFirebase}
+        disabled={isLoading}
+        style={{
+          backgroundColor: '#000',
+          color: '#fff',
+          border: 'none',
+          padding: '12px 24px',
+          borderRadius: '8px',
+          fontSize: '1rem',
+          cursor: isLoading ? 'not-allowed' : 'pointer',
+          opacity: isLoading ? 0.7 : 1
+        }}
+      >
+        {isLoading ? 'Test en cours...' : 'Test de connexion Firebase'}
+      </button>
+
+      {testResult && (
+        <div style={{
+          marginTop: '2rem',
+          padding: '1rem',
+          backgroundColor: '#f5f5f5',
+          borderRadius: '8px',
+          whiteSpace: 'pre-line',
+          fontFamily: 'monospace',
+          textAlign: 'left'
+        }}>
+          {testResult}
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
     </div>
-  );
+  )
 }
