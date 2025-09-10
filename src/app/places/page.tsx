@@ -253,28 +253,19 @@ export default function PlacesPage() {
   return (
     <MainLayout>
       <div className={styles.container}>
-        <div className={styles.header}>
-          <div className={styles.headerContent}>
-            <div className={styles.headerText}>
-              <h1 className={styles.title}>Mes places</h1>
-              <p className={styles.subtitle}>
-                Gérez vos événements créés et vos participations
-              </p>
-            </div>
-            
-            {/* Bouton hors ligne minimaliste */}
-            {user && (
-              <OfflineButton
-                userId={user.uid}
-                createdEvents={createdEvents}
-                joinedEvents={joinedEvents}
-                onDownloadComplete={() => {
-                  console.log('Événements téléchargés pour l\'accès hors ligne')
-                }}
-              />
-            )}
+        {/* Bouton hors ligne repositionné */}
+        {user && (
+          <div className={styles.offlineButtonContainer}>
+            <OfflineButton
+              userId={user.uid}
+              createdEvents={createdEvents}
+              joinedEvents={joinedEvents}
+              onDownloadComplete={() => {
+                console.log('Événements téléchargés pour l\'accès hors ligne')
+              }}
+            />
           </div>
-        </div>
+        )}
 
         {loading ? (
           <div className={styles.loading}>

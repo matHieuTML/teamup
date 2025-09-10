@@ -215,7 +215,7 @@ export default function EventsPage() {
           ) : (
             <div className={styles.simpleEmptyState}>
               <p className={styles.simpleEmptyText}>
-                Aucun événement trouvé. Essayez de modifier vos critères de recherche.
+                Aucun événement ne correspond aux critères.
               </p>
             </div>
           )}

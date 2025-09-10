@@ -261,6 +261,9 @@
 
 /* État vide simple */
 .simpleEmptyState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   padding: var(--space-8) var(--space-4);
   margin: var(--space-6) auto;
