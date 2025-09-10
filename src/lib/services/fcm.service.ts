@@ -26,6 +26,9 @@ export class FCMService {
         return
       }
 
+      // Envoyer la configuration Firebase au service worker de manière sécurisée
+      await this.initializeServiceWorker()
+
       // Écouter les messages en premier plan
       onMessage(this.messagingInstance, (payload) => {
         console.log('🔔 FCM: Message received in foreground', payload)
@@ -35,6 +38,34 @@ export class FCMService {
       console.log('🔔 FCM: Service initialized successfully')
     } catch (error) {
       console.error('🔔 FCM: Failed to initialize', error)
+    }
+  }
+
+  private async initializeServiceWorker(): Promise<void> {
+    try {
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.ready
+        
+        // Envoyer la configuration Firebase au service worker
+        const firebaseConfig = {
+          apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+          authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+          storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+          messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+          appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+          measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+        }
+
+        registration.active?.postMessage({
+          type: 'FIREBASE_CONFIG',
+          config: firebaseConfig
+        })
+
+        console.log('🔔 FCM: Firebase config sent to service worker')
+      }
+    } catch (error) {
+      console.error('🔔 FCM: Failed to initialize service worker', error)
     }
   }
 
