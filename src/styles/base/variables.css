@@ -1,0 +1,240 @@
+/* Variables CSS according to style_guide.md */
+
+:root {
+  /* Colors from style guide */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-primary: #9BD1C0; /* Mint green */
+  --color-secondary: #ABC762; /* Light green */
+  --color-accent: #EA7F58; /* Orange */
+  
+  /* Color variations for gradients and backgrounds */
+  --color-mint: #9BD1C0;
+  --color-mint-10: rgba(155, 209, 192, 0.1);
+  --color-mint-20: rgba(155, 209, 192, 0.2);
+  --color-green: #ABC762;
+  --color-green-10: rgba(171, 199, 98, 0.1);
+  --color-green-20: rgba(171, 199, 98, 0.2);
+  --color-orange: #EA7F58;
+  --color-orange-10: rgba(234, 127, 88, 0.1);
+  --color-orange-20: rgba(234, 127, 88, 0.2);
+  
+  /* Background color */
+  --color-background: #ffffff;
+  
+  /* Fonts as specified in style guide */
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Aconchego', sans-serif;
+  
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  
+  /* Shadows for modern depth */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Colored shadows for modern effects */
+  --shadow-mint: 0 8px 25px rgba(155, 209, 192, 0.3);
+  --shadow-green: 0 8px 25px rgba(171, 199, 98, 0.3);
+  --shadow-orange: 0 8px 25px rgba(234, 127, 88, 0.3);
+  
+  /* Glassmorphism effects */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-bg-strong: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-blur: blur(10px) saturate(180%);
+  
+  /* Transitions */
+  --transition-smooth: all 0.3s ease;
+  --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Z-index layers */
+  --z-fixed: 1000;
+  --z-modal: 1010;
+  --z-popover: 1020;
+  
+  /* Container max-width */
+  --container-max-width: 1400px;
+  --container-padding: 32px;
+}
+
+/* Modern CSS resets */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-black);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+}
+
+/* Container utility */
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+/* Mobile-first responsive containers */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+  
+  :root {
+    --container-padding: 20px;
+  }
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-accent) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: gradient-shift 3s ease-in-out infinite alternate;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% center; }
+  100% { background-position: 100% center; }
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-bounce {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -15px, 0);
+  }
+  70% {
+    transform: translate3d(0, -7px, 0);
+  }
+  90% {
+    transform: translate3d(0, -3px, 0);
+  }
+}
+
+/* Background patterns for polygonal gradients */
+.pattern-dots-light {
+  background-image: radial-gradient(circle, rgba(155, 209, 192, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.pattern-dots {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Polygonal blurred background shapes */
+.bg-polygon::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: -10%;
+  width: 40%;
+  height: 60%;
+  background: linear-gradient(135deg, var(--color-mint-20), var(--color-green-20));
+  border-radius: 50% 30% 70% 40%;
+  filter: blur(60px);
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.bg-polygon::after {
+  content: '';
+  position: absolute;
+  bottom: 10%;
+  right: -10%;
+  width: 50%;
+  height: 70%;
+  background: linear-gradient(225deg, var(--color-orange-20), var(--color-mint-20));
+  border-radius: 30% 70% 50% 40%;
+  filter: blur(80px);
+  opacity: 0.4;
+  z-index: 0;
+}
+
+/* Safe area for mobile navigation */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Glass morphism utilities */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}

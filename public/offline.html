@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamUp - Hors ligne</title>
+    <link rel="icon" href="/favicon.ico">
+    <style>
+        :root {
+            --color-primary: #9BD1C0;
+            --color-white: #ffffff;
+            --color-black: #000000;
+            --color-black-70: rgba(0, 0, 0, 0.7);
+            --font-title: 'Montserrat', sans-serif;
+            --font-body: 'Aconchego', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-white);
+            color: var(--color-black);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .offline-container {
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--color-white);
+            font-weight: bold;
+        }
+
+        h1 {
+            font-family: var(--font-title);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-black);
+            margin-bottom: 16px;
+        }
+
+        p {
+            font-size: 16px;
+            color: var(--color-black-70);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .retry-button {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .retry-button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .features {
+            margin-top: 32px;
+            text-align: left;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--color-black-70);
+        }
+
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="logo">T</div>
+        
+        <h1>Vous êtes hors ligne</h1>
+        
+        <p>
+            TeamUp nécessite une connexion internet pour fonctionner pleinement. 
+            Vérifiez votre connexion et réessayez.
+        </p>
+        
+        <button class="retry-button" onclick="window.location.reload()">
+            Réessayer
+        </button>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <span>Application Progressive Web App</span>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🏃</div>
+                <span>Trouvez vos partenaires sportifs</span>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📅</div>
+                <span>Créez et rejoignez des événements</span>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💬</div>
+                <span>Communiquez avec la communauté</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-retry when connection is restored
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+
+        // Check connection status
+        if (navigator.onLine) {
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

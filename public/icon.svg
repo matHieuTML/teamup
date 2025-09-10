@@ -1,0 +1,48 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9BD1C0;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ABC762;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EA7F58;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f8f9fa;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGradient)" stroke="#ffffff" stroke-width="8"/>
+  
+  <!-- Team icon (people) -->
+  <g fill="url(#iconGradient)">
+    <!-- Person 1 -->
+    <circle cx="200" cy="180" r="25"/>
+    <ellipse cx="200" cy="240" rx="35" ry="45"/>
+    
+    <!-- Person 2 -->
+    <circle cx="256" cy="160" r="28"/>
+    <ellipse cx="256" cy="225" rx="38" ry="50"/>
+    
+    <!-- Person 3 -->
+    <circle cx="312" cy="180" r="25"/>
+    <ellipse cx="312" cy="240" rx="35" ry="45"/>
+  </g>
+  
+  <!-- Sport elements -->
+  <g fill="#ffffff" opacity="0.9">
+    <!-- Ball -->
+    <circle cx="256" cy="320" r="20"/>
+    <path d="M246 310 L266 310 M246 330 L266 330 M236 320 L276 320" stroke="#9BD1C0" stroke-width="2" fill="none"/>
+    
+    <!-- Movement lines -->
+    <path d="M180 350 Q220 340 260 350 Q300 340 340 350" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.7"/>
+    <path d="M190 370 Q230 360 270 370 Q310 360 350 370" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.5"/>
+  </g>
+  
+  <!-- TeamUp text (simplified) -->
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="36" font-weight="bold" text-anchor="middle" fill="#ffffff">
+    TEAMUP
+  </text>
+</svg>

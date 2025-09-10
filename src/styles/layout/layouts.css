@@ -1,0 +1,65 @@
+/* Layout Components Styles - Mobile First */
+
+/* Auth Layout */
+.auth-layout {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-layout__main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-layout__container {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Main Layout */
+.main-layout {
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.main-layout__main {
+  padding-bottom: 80px; /* Space for bottom navigation */
+  min-height: 100vh;
+}
+
+/* Tablet styles */
+@media (min-width: 768px) {
+  .auth-layout {
+    padding: 32px;
+  }
+
+  .auth-layout__main {
+    padding: 32px;
+  }
+
+  .auth-layout__container {
+    max-width: 400px;
+  }
+
+  .main-layout__main {
+    padding-bottom: 100px;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+  .auth-layout {
+    padding: 40px;
+  }
+
+  .auth-layout__main {
+    padding: 40px;
+  }
+}

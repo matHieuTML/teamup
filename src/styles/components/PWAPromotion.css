@@ -1,0 +1,306 @@
+/* PWAPromotion Component Styles - Mobile First */
+
+.pwa-promotion {
+  position: relative;
+  overflow: hidden;
+}
+
+.pwa-promotion__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom right, var(--color-mint-10), transparent, var(--color-orange-10));
+  opacity: 0.6;
+}
+
+.pwa-promotion__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+  padding: 0 20px;
+}
+
+.pwa-promotion__card {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 32px 24px;
+}
+
+.pwa-promotion__header {
+  margin-bottom: 32px;
+}
+
+.pwa-promotion__icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 24px auto;
+  background: linear-gradient(to bottom right, var(--color-primary), var(--color-secondary));
+  border-radius: var(--radius-2xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-mint);
+  transform: scale(1);
+  transition: var(--transition-bounce);
+}
+
+
+.pwa-promotion__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 16px;
+}
+
+.pwa-promotion__badge-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.pwa-promotion__title {
+  font-size: 36px;
+  font-weight: 900;
+  font-family: var(--font-heading);
+  color: var(--color-black);
+  margin-bottom: 24px;
+  line-height: 0.9;
+}
+
+.pwa-promotion__title-line {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.pwa-promotion__title-gradient {
+  display: block;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-accent) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pulse 2s infinite;
+}
+
+.pwa-promotion__title-subtitle {
+  display: block;
+  font-size: 18px;
+  font-weight: 500;
+  opacity: 0.8;
+  margin-top: 8px;
+}
+
+.pwa-promotion__description {
+  font-size: 18px;
+  color: var(--color-black);
+  opacity: 0.8;
+  margin-bottom: 48px;
+  font-family: var(--font-body);
+  line-height: 1.6;
+  max-width: 100%;
+}
+
+.pwa-promotion__features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.pwa-promotion__feature {
+  text-align: center;
+}
+
+.pwa-promotion__feature-card {
+  padding: 24px;
+  transform: scale(1);
+  transition: var(--transition-bounce);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+
+.pwa-promotion__feature-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px auto;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-mint);
+}
+
+.pwa-promotion__feature-icon--primary {
+  background: linear-gradient(to bottom right, var(--color-primary), var(--color-secondary));
+}
+
+.pwa-promotion__feature-icon--secondary {
+  background: linear-gradient(to bottom right, var(--color-secondary), var(--color-accent));
+  box-shadow: var(--shadow-green);
+}
+
+.pwa-promotion__feature-icon--accent {
+  background: linear-gradient(to bottom right, var(--color-accent), var(--color-primary));
+  box-shadow: var(--shadow-orange);
+}
+
+.pwa-promotion__feature-title {
+  font-family: var(--font-heading);
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: var(--color-black);
+}
+
+.pwa-promotion__feature-description {
+  color: var(--color-black);
+  opacity: 0.75;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.pwa-promotion__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.pwa-promotion__button {
+  min-width: 200px;
+}
+
+.pwa-promotion__button--primary {
+  box-shadow: var(--shadow-orange);
+}
+
+.pwa-promotion__compatibility {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-black);
+  opacity: 0.7;
+}
+
+.pwa-promotion__compatibility-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pwa-promotion__compatibility-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.pwa-promotion__compatibility-dot--primary {
+  background-color: var(--color-primary);
+}
+
+.pwa-promotion__compatibility-dot--secondary {
+  background-color: var(--color-secondary);
+}
+
+.pwa-promotion__compatibility-dot--accent {
+  background-color: var(--color-accent);
+}
+
+/* Tablet styles */
+@media (min-width: 768px) {
+  .pwa-promotion__container {
+    padding: 0 40px;
+  }
+
+  .pwa-promotion__card {
+    padding: 48px 40px;
+  }
+
+  .pwa-promotion__icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .pwa-promotion__title {
+    font-size: 48px;
+  }
+
+  .pwa-promotion__title-subtitle {
+    font-size: 24px;
+  }
+
+  .pwa-promotion__description {
+    font-size: 20px;
+    max-width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .pwa-promotion__features {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .pwa-promotion__feature-title {
+    font-size: 18px;
+  }
+
+  .pwa-promotion__feature-description {
+    font-size: 16px;
+  }
+
+  .pwa-promotion__buttons {
+    flex-direction: row;
+    gap: 24px;
+  }
+
+  .pwa-promotion__button {
+    min-width: 240px;
+  }
+
+  .pwa-promotion__compatibility {
+    flex-direction: row;
+    gap: 32px;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+  .pwa-promotion__title {
+    font-size: 64px;
+  }
+
+  .pwa-promotion__title-subtitle {
+    font-size: 32px;
+  }
+
+  .pwa-promotion__description {
+    font-size: 24px;
+    max-width: 900px;
+  }
+}

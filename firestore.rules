@@ -1,22 +1,48 @@
-// Règles temporaires Firestore pour TeamUp (DÉVELOPPEMENT UNIQUEMENT)
+// Règles Firestore sécurisées pour TeamUp
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // TEMPORAIRE : Permettre toutes les lectures/écritures pour les tests
-    // ⚠️ À SECURISER EN PRODUCTION ⚠️
-    match /{document=**} {
-      allow read, write: if true;
+    
+    // 🔒 RÈGLES SÉCURISÉES POUR LA PRODUCTION
+    
+    // Collection users : Lecture autorisée pour son propre profil, écriture via API
+    // TEMPORAIRE : permet la lecture client en fallback si API échoue
+    match /users/{userId} {
+      // Permettre la lecture si l'utilisateur lit son propre profil
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Permettre la création de profil si inexistant (fallback)
+      allow create: if request.auth != null && request.auth.uid == userId;
+      // Écriture via Admin SDK (API routes) principalement
+      allow update: if false;
     }
     
-    // Règles spécifiques pour les utilisateurs (à utiliser plus tard)
-    // match /users/{userId} {
-    //   allow read, write: if request.auth != null && request.auth.uid == userId;
-    // }
+    // Collection events : Lecture publique, écriture authentifiée via API
+    match /events/{eventId} {
+      // Lecture publique des événements (pour la découverte)
+      allow read: if true;
+      // Écriture uniquement via Admin SDK (API routes)
+      allow write: if false;
+    }
     
-    // Règles pour les événements (à utiliser plus tard)  
-    // match /events/{eventId} {
-    //   allow read: if true;
-    //   allow write: if request.auth != null;
-    // }
+    // Collection userEvents : Gestion des participations via API uniquement
+    match /userEvents/{userEventId} {
+      allow read, write: if false;
+    }
+    
+    // Collection messages : Accès via API routes uniquement
+    match /messages/{messageId} {
+      allow read, write: if false;
+    }
+    
+    // Collection temporaire pour tests (à supprimer en production)
+    match /test/{testId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Règle par défaut : interdire tout accès direct
+    // Toutes les opérations passent par l'Admin SDK via les API routes
+    match /{document=**} {
+      allow read, write: if false;
+    }
   }
 }

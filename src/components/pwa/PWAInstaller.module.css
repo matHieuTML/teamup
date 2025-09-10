@@ -1,0 +1,152 @@
+/* PWA Installer - Modern install banner */
+
+.installBanner {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  animation: slideUp 0.3s ease-out;
+  border: 1px solid var(--color-mint-20);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.installContent {
+  display: flex;
+  align-items: center;
+  padding: var(--space-4);
+  gap: var(--space-3);
+}
+
+.installIcon {
+  font-size: var(--text-2xl);
+  flex-shrink: 0;
+}
+
+.installText {
+  flex: 1;
+  min-width: 0;
+}
+
+.installTitle {
+  font-family: var(--font-title);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-black);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.installDescription {
+  font-size: var(--text-sm);
+  color: var(--color-black-70);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.installActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.installButton {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.installButton:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.dismissButton {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--color-black-5);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  color: var(--color-black-50);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dismissButton:hover {
+  background: var(--color-black-10);
+  color: var(--color-black-70);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .installBanner {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+  }
+  
+  .installContent {
+    padding: var(--space-3);
+  }
+  
+  .installTitle {
+    font-size: var(--text-sm);
+  }
+  
+  .installDescription {
+    font-size: var(--text-xs);
+  }
+  
+  .installButton {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+  }
+}
+
+/* Desktop - show as top banner instead */
+@media (min-width: 1024px) {
+  .installBanner {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin: var(--space-4) auto;
+    max-width: 600px;
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}

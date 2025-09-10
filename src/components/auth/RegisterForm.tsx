@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { RegisterFormData } from '@/types/database'
+import '../../styles/components/auth-forms.css'
 
 interface RegisterFormProps {
   onSuccess?: () => void
@@ -47,31 +48,19 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
-      <h3 style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 'bold' }}>
+    <form onSubmit={handleSubmit} className="auth-form">
+      <h3 className="auth-form__title">
         Inscription
       </h3>
 
       {(error || formError) && (
-        <div style={{
-          backgroundColor: '#fecaca',
-          color: '#dc2626',
-          padding: '0.75rem',
-          borderRadius: '0.5rem',
-          marginBottom: '1rem',
-          fontSize: '0.875rem'
-        }}>
+        <div className="auth-form__error">
           {error || formError}
         </div>
       )}
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '0.5rem', 
-          fontSize: '0.875rem',
-          fontWeight: '500'
-        }}>
+      <div className="auth-form__field">
+        <label className="auth-form__label">
           Nom
         </label>
         <input
@@ -81,23 +70,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           onChange={handleChange}
           required
           disabled={loading}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.5rem',
-            fontSize: '1rem'
-          }}
+          className="auth-form__input"
         />
       </div>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '0.5rem', 
-          fontSize: '0.875rem',
-          fontWeight: '500'
-        }}>
+      <div className="auth-form__field">
+        <label className="auth-form__label">
           Email
         </label>
         <input
@@ -107,23 +85,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           onChange={handleChange}
           required
           disabled={loading}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.5rem',
-            fontSize: '1rem'
-          }}
+          className="auth-form__input"
         />
       </div>
 
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '0.5rem', 
-          fontSize: '0.875rem',
-          fontWeight: '500'
-        }}>
+      <div className="auth-form__field">
+        <label className="auth-form__label">
           Mot de passe
         </label>
         <input
@@ -133,15 +100,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           onChange={handleChange}
           required
           disabled={loading}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.5rem',
-            fontSize: '1rem'
-          }}
+          className="auth-form__input"
         />
-        <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
+        <div className="auth-form__helper-text">
           Minimum 6 caractères
         </div>
       </div>
@@ -149,18 +110,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       <button
         type="submit"
         disabled={loading}
-        style={{
-          width: '100%',
-          backgroundColor: '#000',
-          color: '#fff',
-          padding: '0.75rem',
-          border: 'none',
-          borderRadius: '0.5rem',
-          fontSize: '1rem',
-          fontWeight: '500',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          opacity: loading ? 0.7 : 1
-        }}
+        className="auth-form__submit"
       >
         {loading ? 'Inscription...' : 'S\'inscrire'}
       </button>

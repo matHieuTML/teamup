@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDB } from '@/lib/firebase-admin'
+import { FieldValue } from 'firebase-admin/firestore'
 
 // GET - Récupérer les messages d'un événement
 export async function GET(request: NextRequest) {
@@ -17,19 +18,51 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Firebase Admin non configuré' }, { status: 500 })
     }
 
-    // Récupérer les messages d'un événement, ordonnés par date
+    // Récupérer les messages d'un événement (tri côté client pour éviter l'index composite)
     const messagesSnapshot = await adminDB
       .collection('messages')
       .where('id_event', '==', eventId)
-      .orderBy('time', 'desc')
-      .limit(limit)
-      .offset(offset)
+      .limit(limit + offset) // Récupérer plus pour permettre le tri côté client
       .get()
 
-    const messages = messagesSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }))
+    // Enrichir les messages avec les données utilisateur
+    const allMessages = await Promise.all(
+      messagesSnapshot.docs.map(async (doc) => {
+        const messageData = doc.data()
+        
+        // Récupérer les informations utilisateur
+        let userData = null
+        if (messageData.id_user) {
+          try {
+            const userDoc = await adminDB.collection('users').doc(messageData.id_user).get()
+            if (userDoc.exists) {
+              const user = userDoc.data()
+              userData = {
+                name: user?.name || user?.first_name || 'Utilisateur',
+                profile_picture_url: user?.profile_picture_url || null
+              }
+            }
+          } catch (error) {
+            console.warn('Erreur lors de la récupération des données utilisateur:', error)
+          }
+        }
+
+        return {
+          id: doc.id,
+          ...messageData,
+          user: userData || { name: 'Utilisateur', profile_picture_url: null }
+        }
+      })
+    )
+
+    // Trier par date (plus récents en premier) et appliquer offset/limit
+    const messages = allMessages
+      .sort((a: any, b: any) => {
+        const timeA = a.time?.seconds || a.time?._seconds || 0
+        const timeB = b.time?.seconds || b.time?._seconds || 0
+        return timeB - timeA // Ordre décroissant (plus récents en premier)
+      })
+      .slice(offset, offset + limit)
 
     return NextResponse.json({ success: true, messages })
 
@@ -85,7 +118,7 @@ export async function POST(request: NextRequest) {
 
     // Incrémenter le compteur de messages envoyés de l'utilisateur
     await adminDB.collection('users').doc(id_user).update({
-      number_message_sent: adminDB.FieldValue.increment(1),
+      number_message_sent: FieldValue.increment(1),
       updated_at: new Date()
     })
 
@@ -192,7 +225,7 @@ export async function DELETE(request: NextRequest) {
     // Décrémenter le compteur de messages de l'auteur
     if (messageData?.id_user) {
       await adminDB.collection('users').doc(messageData.id_user).update({
-        number_message_sent: adminDB.FieldValue.increment(-1),
+        number_message_sent: FieldValue.increment(-1),
         updated_at: new Date()
       })
     }

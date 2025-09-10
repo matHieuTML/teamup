@@ -1,0 +1,5 @@
+export { default as HomeIcon } from './HomeIcon'
+export { default as EventsIcon } from './EventsIcon'
+export { default as CreateIcon } from './CreateIcon'
+export { default as PlacesIcon } from './PlacesIcon'
+export { default as ProfileIcon } from './ProfileIcon'

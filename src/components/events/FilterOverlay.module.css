@@ -1,0 +1,435 @@
+/* FilterOverlay - Modern floating overlay design */
+
+/* Background overlay */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Main filter panel */
+.filterPanel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  max-height: 80vh;
+  animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(100%); 
+    opacity: 0;
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1;
+  }
+}
+
+/* Drag handle */
+.dragHandle {
+  width: 40px;
+  height: 4px;
+  background: var(--color-black-20);
+  border-radius: 2px;
+  margin: 12px auto 8px;
+  cursor: grab;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--color-black-10);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.closeButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--color-black-10);
+  border-radius: 50%;
+  color: var(--color-black-60);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  background: var(--color-black-20);
+  color: var(--color-black);
+}
+
+/* Content */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  padding-bottom: 0;
+}
+
+/* Sections */
+.section {
+  margin-bottom: var(--space-6);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-black);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.sectionIcon {
+  font-size: 20px;
+}
+
+/* Sports Grid */
+.sportsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.sportButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border: 2px solid var(--color-black-10);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 80px;
+}
+
+.sportButton:hover {
+  border-color: var(--color-mint);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(155, 209, 192, 0.2);
+}
+
+.sportButton.active {
+  border-color: var(--color-mint);
+  background: var(--color-mint);
+  color: var(--color-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(155, 209, 192, 0.3);
+}
+
+.sportIcon {
+  font-size: 24px;
+}
+
+.sportName {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Level Buttons */
+.levelButtons {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.levelButton {
+  flex: 1;
+  min-width: 80px;
+  padding: var(--space-3) var(--space-2);
+  border: 2px solid;
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+
+.levelDébutant {
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.levelDébutant.active {
+  background: #10b981;
+  color: white;
+}
+
+.levelIntermédiaire {
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+.levelIntermédiaire.active {
+  background: #f59e0b;
+  color: white;
+}
+
+.levelAvancé {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.levelAvancé.active {
+  background: #ef4444;
+  color: white;
+}
+
+.levelExpert {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.levelExpert.active {
+  background: #8b5cf6;
+  color: white;
+}
+
+/* Date Buttons */
+.dateButtons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dateButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--color-black-10);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-black);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.dateButton:hover {
+  border-color: var(--color-mint);
+  background: var(--color-mint-10);
+}
+
+.dateButton.active {
+  border-color: var(--color-mint);
+  background: var(--color-mint);
+  color: var(--color-white);
+}
+
+.dateIcon {
+  font-size: 18px;
+}
+
+/* Location Controls */
+.locationControls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.locationToggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--color-black-10);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-black);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.locationToggle:hover {
+  border-color: var(--color-mint);
+  background: var(--color-mint-10);
+}
+
+.locationToggle.active {
+  border-color: var(--color-mint);
+  background: var(--color-mint);
+  color: var(--color-white);
+}
+
+.locationIcon {
+  font-size: 18px;
+}
+
+/* Distance Slider */
+.distanceSlider {
+  padding: var(--space-3);
+  background: var(--color-mint-10);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-mint-20);
+}
+
+.sliderLabel {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: var(--space-2);
+}
+
+.slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-black-20);
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-mint);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(155, 209, 192, 0.3);
+  transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(155, 209, 192, 0.4);
+}
+
+/* Footer */
+.footer {
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-black-10);
+  background: var(--color-white);
+}
+
+.eventCount {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-black-60);
+  text-align: center;
+  margin-bottom: var(--space-3);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.clearButton {
+  flex: 1;
+  padding: var(--space-3);
+  border: 2px solid var(--color-black-20);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-black-60);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clearButton:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.applyButton {
+  flex: 2;
+  padding: var(--space-3);
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--color-mint);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px rgba(155, 209, 192, 0.3);
+}
+
+.applyButton:hover {
+  background: var(--color-green);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(155, 209, 192, 0.4);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .filterPanel {
+    max-height: 85vh;
+  }
+  
+  .sportsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+  }
+  
+  .sportButton {
+    min-height: 70px;
+    padding: var(--space-2);
+  }
+  
+  .levelButtons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+}

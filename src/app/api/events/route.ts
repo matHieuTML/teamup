@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminDB } from '@/lib/firebase-admin'
+import { adminDB, initializeFirebaseAdmin } from '@/lib/firebase-admin'
 import { SportType, EventVisibility } from '@/types/database'
+import { FieldValue } from 'firebase-admin/firestore'
+
+// Initialiser Firebase Admin
+initializeFirebaseAdmin()
 
 // GET - Récupérer tous les événements ou un événement spécifique
 export async function GET(request: NextRequest) {
@@ -10,7 +14,6 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId')
     const sportType = searchParams.get('sportType') as SportType
     const limit = parseInt(searchParams.get('limit') || '20')
-    const offset = parseInt(searchParams.get('offset') || '0')
 
     if (!adminDB) {
       return NextResponse.json({ error: 'Firebase Admin non configuré' }, { status: 500 })
@@ -29,39 +32,68 @@ export async function GET(request: NextRequest) {
         event: { id: eventDoc.id, ...eventDoc.data() } 
       })
     } else {
-      // Construire la query avec filtres optionnels
-      let query = adminDB.collection('events')
-        .where('visibility', '==', EventVisibility.PUBLIC)
-        .orderBy('date', 'asc')
-        .limit(limit)
-        .offset(offset)
+      let events: Array<{ id: string; visibility?: string; type?: string; date?: any; created_by?: string; [key: string]: any }> = []
 
-      // Filtrer par créateur
       if (userId) {
-        query = adminDB.collection('events')
+        // Requête simple pour les événements d'un utilisateur spécifique
+        // Évite l'index composite en ne faisant qu'un seul filtre
+        const eventsSnapshot = await adminDB
+          .collection('events')
           .where('created_by', '==', userId)
-          .orderBy('date', 'asc')
-          .limit(limit)
-          .offset(offset)
+          .get()
+
+        events = eventsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+
+        // Trier côté serveur par date
+        events.sort((a, b) => {
+          const dateA = a.date?.seconds ? new Date(a.date.seconds * 1000) : new Date(a.date || 0)
+          const dateB = b.date?.seconds ? new Date(b.date.seconds * 1000) : new Date(b.date || 0)
+          return dateA.getTime() - dateB.getTime()
+        })
+      } else {
+        // Requête pour tous les événements publics
+        let queryRef = adminDB.collection('events')
+
+        // Filtrer par type de sport si spécifié
+        if (sportType) {
+          queryRef = queryRef.where('type', '==', sportType)
+        }
+
+        // Ordonner par date et limiter
+        const finalQuery = queryRef.orderBy('date', 'asc').limit(limit * 2)
+        const eventsSnapshot = await finalQuery.get()
+
+        events = eventsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+
+        // Filtrer côté serveur pour les événements publics
+        events = events.filter(event => event.visibility === EventVisibility.PUBLIC || event.visibility === 'public')
       }
 
-      // Filtrer par type de sport
-      if (sportType) {
-        query = query.where('type', '==', sportType)
-      }
+      // Limiter après filtrage et tri
+      events = events.slice(0, limit)
 
-      const eventsSnapshot = await query.get()
+      const total = events.length
+      const hasMore = events.length === limit
 
-      const events = eventsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
-
-      return NextResponse.json({ success: true, events })
+      return NextResponse.json({ 
+        success: true, 
+        data: {
+          events,
+          total,
+          hasMore
+        }
+      })
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Erreur GET /api/events:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    const message = error instanceof Error ? error.message : 'Erreur interne du serveur'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
 
@@ -106,45 +138,62 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Utilisateur créateur non trouvé' }, { status: 404 })
     }
 
-    const eventData = {
+    // Construire l'objet eventData en filtrant les valeurs undefined
+    const eventData: any = {
       name,
       type,
       description,
-      level_needed,
       location_name,
-      location_id,
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
-      picture_url,
       competent_trainer,
       date: new Date(date),
-      average_speed: average_speed ? parseFloat(average_speed) : undefined,
-      distance: distance ? parseFloat(distance) : undefined,
-      max_participants: max_participants ? parseInt(max_participants) : undefined,
       created_by,
       created_at: new Date(),
       updated_at: new Date(),
       visibility
     }
 
+    // Ajouter les champs optionnels seulement s'ils ne sont pas undefined
+    if (level_needed) eventData.level_needed = level_needed
+    if (location_id) eventData.location_id = location_id
+    if (picture_url) eventData.picture_url = picture_url
+    if (average_speed) eventData.average_speed = parseFloat(average_speed)
+    if (distance) eventData.distance = parseFloat(distance)
+    if (max_participants) eventData.max_participants = parseInt(max_participants)
+
     const docRef = await adminDB.collection('events').add(eventData)
+    const eventId = docRef.id
+
+    // Créer automatiquement l'entrée UserEvent pour l'organisateur
+    // Selon la structure: Table UserEvent { id_user, id_event, role, joined_at }
+    const userEventData = {
+      id_user: created_by,
+      id_event: eventId,
+      role: 'organisateur',
+      joined_at: new Date()
+    }
+
+    await adminDB.collection('userEvents').add(userEventData)
 
     // Incrémenter le compteur d'événements créés de l'utilisateur
     await adminDB.collection('users').doc(created_by).update({
-      number_event_created: adminDB.FieldValue.increment(1),
+      number_event_created: FieldValue.increment(1),
       updated_at: new Date()
     })
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Événement créé',
-      eventId: docRef.id
+      message: 'Événement créé avec succès',
+      eventId: eventId
     })
 
-  } catch (error: any) {
-    console.error('❌ Erreur POST /api/events:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de l\'événement:', error)
+    return NextResponse.json(
+      { error: 'Erreur lors de la mise à jour de l\'événement' },
+      { status: 500 }
+    )}
 }
 
 // PUT - Mettre à jour un événement
@@ -168,30 +217,44 @@ export async function PUT(request: NextRequest) {
     }
 
     // Mettre à jour avec updated_at et conversion des types si nécessaire
-    const updatedData = {
+    const updateFields: Record<string, unknown> = {
       ...updateData,
       updated_at: new Date()
     }
 
     // Convertir les types numériques si présents
-    if (updatedData.latitude) updatedData.latitude = parseFloat(updatedData.latitude)
-    if (updatedData.longitude) updatedData.longitude = parseFloat(updatedData.longitude)
-    if (updatedData.average_speed) updatedData.average_speed = parseFloat(updatedData.average_speed)
-    if (updatedData.distance) updatedData.distance = parseFloat(updatedData.distance)
-    if (updatedData.max_participants) updatedData.max_participants = parseInt(updatedData.max_participants)
-    if (updatedData.date) updatedData.date = new Date(updatedData.date)
+    if (updateFields.latitude && typeof updateFields.latitude === 'string') {
+      updateFields.latitude = parseFloat(updateFields.latitude)
+    }
+    if (updateFields.longitude && typeof updateFields.longitude === 'string') {
+      updateFields.longitude = parseFloat(updateFields.longitude)
+    }
+    if (updateFields.average_speed && typeof updateFields.average_speed === 'string') {
+      updateFields.average_speed = parseFloat(updateFields.average_speed)
+    }
+    if (updateFields.distance && typeof updateFields.distance === 'string') {
+      updateFields.distance = parseFloat(updateFields.distance)
+    }
+    if (updateFields.max_participants && typeof updateFields.max_participants === 'string') {
+      updateFields.max_participants = parseInt(updateFields.max_participants)
+    }
+    if (updateFields.date && (typeof updateFields.date === 'string' || typeof updateFields.date === 'number')) {
+      updateFields.date = new Date(updateFields.date)
+    }
 
-    await adminDB.collection('events').doc(id).update(updatedData)
+    await adminDB.collection('events').doc(id).update(updateFields)
 
     return NextResponse.json({ 
       success: true, 
       message: 'Événement mis à jour' 
     })
 
-  } catch (error: any) {
-    console.error('❌ Erreur PUT /api/events:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
+  } catch (error) {
+    console.error('Erreur API events:', error)
+    return NextResponse.json(
+      { error: 'Erreur interne du serveur' },
+      { status: 500 }
+    )}
 }
 
 // DELETE - Supprimer un événement
@@ -245,7 +308,7 @@ export async function DELETE(request: NextRequest) {
     // Décrémenter le compteur d'événements créés de l'utilisateur
     if (eventData?.created_by) {
       await adminDB.collection('users').doc(eventData.created_by).update({
-        number_event_created: adminDB.FieldValue.increment(-1),
+        number_event_created: FieldValue.increment(-1),
         updated_at: new Date()
       })
     }
@@ -255,7 +318,7 @@ export async function DELETE(request: NextRequest) {
       message: 'Événement supprimé' 
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Erreur DELETE /api/events:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

@@ -1,0 +1,172 @@
+/* Auth Tabs Styles - Mobile First */
+
+.auth-tabs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+}
+
+.auth-tabs__nav {
+  display: flex;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-xl);
+  padding: 4px;
+  gap: 4px;
+}
+
+.auth-tabs__button {
+  padding: 12px 20px;
+  border-radius: var(--radius-lg);
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  background: transparent;
+  color: var(--color-black);
+  opacity: 0.7;
+  min-width: 100px;
+}
+
+.auth-tabs__button--active {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-black);
+  opacity: 1;
+  box-shadow: var(--shadow-sm);
+  transform: scale(1.02);
+}
+
+.auth-tabs__content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-tabs__form-container {
+  width: 100%;
+  max-width: 100%;
+  animation: slide-in 0.3s ease-out;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-tabs__status {
+  text-align: center;
+  background: rgba(240, 253, 244, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(220, 252, 231, 0.5);
+  border-radius: var(--radius-xl);
+  padding: 32px 24px;
+  margin-bottom: 24px;
+}
+
+.auth-tabs__status-title {
+  font-size: 24px;
+  font-weight: bold;
+  font-family: var(--font-heading);
+  margin-bottom: 8px;
+  color: #065f46;
+  text-transform: uppercase;
+}
+
+.auth-tabs__status-greeting {
+  color: #047857;
+  font-size: 18px;
+  margin-bottom: 8px;
+  font-family: var(--font-body);
+}
+
+.auth-tabs__status-info {
+  color: #6b7280;
+  font-size: 14px;
+  font-family: var(--font-body);
+  opacity: 0.8;
+}
+
+.auth-tabs__logout-button {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  text-transform: uppercase;
+  margin-top: 16px;
+}
+
+.auth-tabs__logout-button:active {
+  transform: scale(0.98);
+}
+
+.auth-tabs__loading {
+  text-align: center;
+  padding: 32px;
+  color: var(--color-black);
+  opacity: 0.7;
+  font-family: var(--font-body);
+}
+
+/* Tablet styles */
+@media (min-width: 768px) {
+  .auth-tabs__nav {
+    padding: 6px;
+  }
+
+  .auth-tabs__button {
+    padding: 14px 24px;
+    font-size: 16px;
+    min-width: 120px;
+  }
+
+  .auth-tabs__status {
+    padding: 40px 32px;
+  }
+
+  .auth-tabs__status-title {
+    font-size: 28px;
+  }
+
+  .auth-tabs__status-greeting {
+    font-size: 20px;
+  }
+
+  .auth-tabs__logout-button {
+    padding: 14px 36px;
+    font-size: 18px;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+  .auth-tabs__form-container {
+    max-width: 500px;
+  }
+
+  .auth-tabs__status {
+    padding: 48px 40px;
+  }
+
+  .auth-tabs__status-title {
+    font-size: 32px;
+  }
+}

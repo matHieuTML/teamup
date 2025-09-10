@@ -1,0 +1,8 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10" cy="10" r="10" fill="#9BD1C0"/>
+  <!-- Flèche de téléchargement -->
+  <path d="M10 5v8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <path d="M7 10l3 3 3-3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Ligne de base (représente le stockage local) -->
+  <path d="M6 15h8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,372 @@
+/* ImageUploader - Design system TeamUp */
+
+.uploader {
+  position: relative;
+  border: 2px dashed var(--color-black-20);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.uploader:hover {
+  border-color: var(--color-primary);
+  background: var(--color-mint-10);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--color-black-10);
+}
+
+.uploader.dragOver {
+  border-color: var(--color-secondary);
+  background: var(--color-green-10);
+  transform: scale(1.02);
+}
+
+.uploader.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Variants */
+.uploader.default {
+  padding: var(--space-8);
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploader.compact {
+  padding: var(--space-4);
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploader.profile {
+  padding: var(--space-6);
+  width: 200px;
+  height: 200px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Input caché */
+.hiddenInput {
+  display: none;
+}
+
+/* Zone de drop */
+.dropZone {
+  text-align: center;
+  width: 100%;
+}
+
+.dropIcon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.uploader:hover .dropIcon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.dropText {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-black);
+  margin: 0 0 var(--space-4) 0;
+  font-weight: 500;
+}
+
+.uploadLimits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.uploadLimits small {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--color-black);
+  opacity: 0.6;
+}
+
+/* États de prévisualisation */
+.imagePreview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.previewImage,
+.uploadedImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  transition: transform 0.3s ease;
+}
+
+.profile .previewImage,
+.profile .uploadedImage {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+/* Overlay pendant l'upload */
+.uploadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+}
+
+.profile .uploadingOverlay {
+  border-radius: var(--radius-full);
+}
+
+.progressContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+.progressBar {
+  width: 120px;
+  height: 4px;
+  background: var(--color-white);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  opacity: 0.3;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+/* Overlay de succès */
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: var(--radius-md);
+}
+
+.profile .imageOverlay {
+  border-radius: var(--radius-full);
+}
+
+.imagePreview:hover .imageOverlay {
+  opacity: 1;
+}
+
+.changeButton {
+  background: var(--color-white);
+  color: var(--color-black);
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.changeButton:hover {
+  background: var(--color-primary);
+  transform: scale(1.05);
+}
+
+/* État de succès */
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.successInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-success);
+  font-weight: 500;
+}
+
+.successIcon {
+  font-size: var(--text-base);
+}
+
+/* État d'erreur */
+.errorState {
+  text-align: center;
+  padding: var(--space-6);
+}
+
+.errorIcon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-4);
+}
+
+.errorMessage {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-error);
+  margin: 0 0 var(--space-4) 0;
+  line-height: 1.4;
+}
+
+.retryButton {
+  background: var(--color-error);
+  color: var(--color-white);
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retryButton:hover {
+  background: var(--color-error);
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* État d'upload en cours */
+.uploadingState {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .uploader.default {
+    padding: var(--space-6);
+    min-height: 160px;
+  }
+
+  .uploader.profile {
+    width: 150px;
+    height: 150px;
+  }
+
+  .dropIcon {
+    font-size: 2.5rem;
+  }
+
+  .dropText {
+    font-size: var(--text-sm);
+  }
+}
+
+/* Animation d'entrée */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.uploader > * {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Focus states pour l'accessibilité */
+.uploader:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Effets de gradient polygonal en arrière-plan */
+.uploader::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  background: linear-gradient(
+    45deg,
+    var(--color-mint-10),
+    var(--color-green-10),
+    var(--color-orange-10)
+  );
+  border-radius: 50% 30% 70% 40%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+  filter: blur(20px);
+}
+
+.uploader:hover::before {
+  opacity: 0.3;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  33% {
+    transform: rotate(120deg) scale(1.1);
+  }
+  66% {
+    transform: rotate(240deg) scale(0.9);
+  }
+}

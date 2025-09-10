@@ -1,0 +1,32 @@
+// Règles Firebase Storage pour TeamUp
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Images de profil : accès authentifié uniquement
+    match /profile-pictures/{userId}/{fileName} {
+      allow read: if true; // Lecture publique des photos de profil
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Images d'événements : accès authentifié pour l'upload
+    match /event-images/{userId}/{fileName} {
+      allow read: if true; // Lecture publique des images d'événements
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Images générales : accès authentifié
+    match /images/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Règle par défaut : interdire tout accès
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

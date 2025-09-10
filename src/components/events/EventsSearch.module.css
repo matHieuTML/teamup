@@ -1,0 +1,333 @@
+/* EventsSearch - Modern design inspired by Uber/Too Good To Go */
+
+.searchContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  background: transparent;
+}
+
+/* Barre de recherche principale - Style moderne */
+.searchBar {
+  width: 100%;
+  margin-bottom: var(--space-3);
+}
+
+.searchInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--color-white);
+  border: none;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  height: 52px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  padding: 0 var(--space-4);
+}
+
+.searchInput:focus-within {
+  box-shadow: 0 4px 32px rgba(155, 209, 192, 0.25);
+  transform: translateY(-2px);
+}
+
+.searchIcon {
+  font-size: 18px;
+  color: var(--color-black-40);
+  margin-right: var(--space-3);
+}
+
+.input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-black);
+  font-weight: 500;
+}
+
+.input::placeholder {
+  color: var(--color-black-40);
+  font-style: italic;
+}
+
+.clearButton {
+  padding: var(--space-2) var(--space-4);
+  background: none;
+  border: none;
+  color: var(--color-black-40);
+  cursor: pointer;
+  font-size: var(--text-lg);
+  transition: color 0.2s ease;
+}
+
+.clearButton:hover {
+  color: var(--color-error);
+}
+
+/* Conteneur des filtres - Style chips modernes */
+.filtersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.filtersRow {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Groupes de filtres - Style chip */
+.filterGroup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  flex: 0 0 auto;
+}
+
+.filterLabel {
+  display: none;
+}
+
+.select {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: var(--color-white);
+  color: var(--color-black-70);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  appearance: none;
+  min-width: 100px;
+}
+
+.select:focus {
+  outline: none;
+  box-shadow: 0 4px 20px rgba(155, 209, 192, 0.2);
+  transform: translateY(-1px);
+}
+
+.select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Bouton géolocalisation - Style chip moderne */
+.locationButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: var(--color-white);
+  color: var(--color-black-70);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.locationButton.select:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.locationButton:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.locationButton.active {
+  background: var(--color-mint);
+  color: var(--color-white);
+  box-shadow: 0 4px 20px rgba(155, 209, 192, 0.3);
+}
+
+.locationButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.locationIcon {
+  font-size: var(--text-base);
+}
+
+/* Bouton effacer filtres - Style chip moderne */
+.clearFiltersButton {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: var(--color-white);
+  color: var(--color-error);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.clearFiltersButton:hover {
+  background: var(--color-error);
+  color: var(--color-white);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.2);
+}
+
+/* Filtres actifs - Style moderne */
+.activeFilters {
+  display: none;
+}
+
+.activeFiltersLabel {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-black);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.activeFiltersList {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.activeFilter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+
+.activeFilter button {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: var(--text-xs);
+  padding: var(--space-1);
+  border-radius: var(--radius-xs);
+  transition: background-color 0.2s ease;
+}
+
+.activeFilter button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filtersRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filterGroup {
+    min-width: unset;
+    flex: none;
+  }
+
+  .locationButton,
+  .clearFiltersButton {
+    align-self: center;
+    min-width: 200px;
+  }
+
+  .activeFiltersList {
+    justify-content: center;
+  }
+
+  .searchInput {
+    border-radius: var(--radius-md);
+  }
+
+  .input {
+    font-size: var(--text-sm);
+    padding: var(--space-3) 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchContainer {
+    gap: var(--space-3);
+  }
+
+  .filtersContainer {
+    padding: var(--space-3);
+  }
+
+  .searchIcon {
+    padding: 0 var(--space-3);
+  }
+
+  .filterGroup {
+    gap: var(--space-2);
+  }
+
+  .activeFilters {
+    padding: var(--space-2);
+  }
+
+  .activeFiltersList {
+    gap: var(--space-1);
+  }
+}
+
+/* Animation d'entrée */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.searchContainer {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* États de chargement */
+.searchContainer.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.searchContainer.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-lg);
+  z-index: 1;
+}

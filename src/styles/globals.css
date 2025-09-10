@@ -1,0 +1,19 @@
+/* Import all CSS variables and base styles */
+@import './base/variables.css';
+
+/* Import component styles */
+@import './components/EventsCarousel.css';
+@import './components/auth-forms.css';
+@import './components/auth-page.css';
+@import './components/auth-tabs.css';
+@import './components/HeroSection.css';
+@import './components/PWAPromotion.css';
+
+/* Import UI component styles */
+@import './ui/Button.css';
+@import './ui/Card.css';
+@import './ui/Section.css';
+
+/* Import layout styles */
+@import './layout/navigation.css';
+@import './layout/layouts.css';

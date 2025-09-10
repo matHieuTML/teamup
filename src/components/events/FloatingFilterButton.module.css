@@ -1,0 +1,93 @@
+/* FloatingFilterButton - Modern floating action button */
+
+.floatingButton {
+  position: relative;
+  width: 160px;
+  height: 44px;
+  border-radius: 22px;
+  background: var(--color-mint);
+  border: none;
+  box-shadow: 0 2px 12px rgba(155, 209, 192, 0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-body);
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.floatingButton:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 24px rgba(155, 209, 192, 0.4);
+  background: var(--color-green);
+}
+
+.floatingButton.active {
+  background: var(--color-orange);
+  box-shadow: 0 4px 20px rgba(234, 127, 88, 0.4);
+}
+
+.floatingButton.active:hover {
+  background: var(--color-orange);
+  box-shadow: 0 6px 28px rgba(234, 127, 88, 0.5);
+}
+
+.filterIcon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.buttonText {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-white);
+  letter-spacing: 0.3px;
+  line-height: 1;
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  background: var(--color-error);
+  border: 2px solid var(--color-white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-white);
+  animation: bounce 0.6s ease-out;
+}
+
+@keyframes bounce {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .floatingButton {
+    bottom: 90px; /* Au-dessus du menu mobile */
+    right: 20px;
+    width: 56px;
+    height: 56px;
+  }
+  
+  .filterIcon {
+    font-size: 18px;
+  }
+  
+  .buttonText {
+    font-size: 9px;
+  }
+}

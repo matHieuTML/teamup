@@ -1,0 +1,53 @@
+/* Create Page - Design system TeamUp */
+
+.pageContainer {
+  min-height: 100vh;
+  padding: var(--space-6) var(--space-4);
+  background: linear-gradient(
+    135deg,
+    var(--color-mint-10) 0%,
+    var(--color-white) 50%,
+    var(--color-green-10) 100%
+  );
+}
+
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--space-8);
+}
+
+.loadingText {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  color: var(--color-black);
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: var(--space-4) var(--space-2);
+  }
+}
+
+/* Animation de fond */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.pageContainer {
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease infinite;
+}
