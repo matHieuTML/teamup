@@ -104,34 +104,14 @@ const EventDetailPage = () => {
     }
   }
 
-  const formatDate = (dateValue: any) => {
+  const formatDateTime = (dateValue: Date | { seconds: number } | string) => {
     try {
-      let date: Date
-      
-      if (dateValue && typeof dateValue === 'object' && dateValue.seconds) {
-        date = new Date(dateValue.seconds * 1000)
-      } else if (dateValue && typeof dateValue === 'string') {
-        date = new Date(dateValue)
-      } else if (dateValue instanceof Date) {
-        date = dateValue
-      } else {
-        return 'Date non disponible'
-      }
-
-      if (isNaN(date.getTime())) {
-        return 'Date invalide'
-      }
-
-      return date.toLocaleDateString('fr-FR', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
+      const dateStr = EventService.formatEventDate(dateValue)
+      const timeStr = EventService.formatEventTime(dateValue)
+      return `${dateStr} à ${timeStr}`
     } catch (error) {
-      return 'Erreur de date'
+      console.error('Erreur formatage date/heure:', error)
+      return 'Date non disponible'
     }
   }
 
@@ -155,7 +135,7 @@ const EventDetailPage = () => {
       <MainLayout>
         <div className={styles.loadingState}>
           <div className={styles.loadingSpinner}></div>
-          <p className={styles.loadingText}>Vérification de l'authentification...</p>
+          <p className={styles.loadingText}>Vérification de l&apos;authentification...</p>
         </div>
       </MainLayout>
     )
@@ -254,7 +234,7 @@ const EventDetailPage = () => {
               <span className={styles.emoji}>📅</span>
               <div>
                 <strong>Date & Heure</strong>
-                <p>{formatDate(event.date)}</p>
+                <p>{formatDateTime(event.date)}</p>
               </div>
             </div>
 

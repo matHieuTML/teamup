@@ -16,7 +16,7 @@
     "@serwist/sw": "^9.1.1",
     "@types/uuid": "^10.0.0",
     "firebase": "^12.1.0",
-    "firebase-admin": "^13.4.0",
+    "firebase-admin": "^13.5.0",
     "geolib": "^3.3.4",
     "google-auth-library": "^10.3.0",
     "next": "^15.4.6",
