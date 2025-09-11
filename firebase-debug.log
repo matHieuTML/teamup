@@ -1,0 +1,28 @@
+[debug] [2025-09-11T19:59:01.905Z] ----------------------------------------------------------------------
+[debug] [2025-09-11T19:59:01.907Z] Command:       /opt/homebrew/Cellar/node/24.1.0/bin/node /opt/homebrew/bin/firebase use --add
+[debug] [2025-09-11T19:59:01.907Z] CLI Version:   14.7.0
+[debug] [2025-09-11T19:59:01.907Z] Platform:      darwin
+[debug] [2025-09-11T19:59:01.907Z] Node Version:  v24.1.0
+[debug] [2025-09-11T19:59:01.907Z] Time:          Thu Sep 11 2025 21:59:01 GMT+0200 (heure d’été d’Europe centrale)
+[debug] [2025-09-11T19:59:01.908Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-09-11T19:59:02.026Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-09-11T19:59:02.027Z] > authorizing via signed-in user (competbtrois@gmail.com)
+[debug] [2025-09-11T19:59:02.027Z] Checked if tokens are valid: true, expires at: 1757624332895
+[debug] [2025-09-11T19:59:02.027Z] Checked if tokens are valid: true, expires at: 1757624332895
+[debug] [2025-09-11T19:59:02.028Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2025-09-11T19:59:02.591Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2025-09-11T19:59:02.591Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2025-09-11T19:59:40.753Z] ExitPromptError: User force closed the prompt with SIGINT
+    at Interface.sigint (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/@inquirer/core/dist/commonjs/lib/create-prompt.js:101:37)
+    at Interface.emit (node:events:507:28)
+    at Interface.emit (node:domain:489:12)
+    at [_ttyWrite] [as _ttyWrite] (node:internal/readline/interface:1381:18)
+    at ReadStream.onkeypress (node:internal/readline/interface:297:20)
+    at ReadStream.emit (node:events:519:35)
+    at ReadStream.emit (node:domain:489:12)
+    at emitKeys (node:internal/readline/utils:371:14)
+    at emitKeys.next (<anonymous>)
+    at ReadStream.onData (node:internal/readline/emitKeypressEvents:64:36)
+[error] 
+[error] Error: An unexpected error has occurred.

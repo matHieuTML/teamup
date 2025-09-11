@@ -1,5 +1,25 @@
 /* EventsCarousel Component Styles - Mobile First Approach */
 
+/* Effet de flou pour utilisateurs non connectés */
+.blurred {
+  filter: blur(4px);
+  opacity: 0.6;
+  pointer-events: none;
+  user-select: none;
+  position: relative;
+}
+
+.blurred::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
 .events-carousel {
   padding: 80px 0;
   background-color: var(--color-background);

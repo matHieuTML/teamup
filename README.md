@@ -1,158 +1,92 @@
-# TeamUp - Application sportive collaborative
+# TeamUp - Application Sportive Collaborative
 
-![TeamUp Logo](public/teamup-logo.svg)
+> **MVP Production-Ready** - Projet Titre 6 CDSD - Septembre 2025
 
-## 📋 À propos du projet
+## 🎯 À propos
 
-TeamUp est une Progressive Web App (PWA) qui facilite l'organisation d'événements sportifs locaux. L'application permet aux utilisateurs de créer, rejoindre et gérer facilement des activités sportives dans leur quartier, favorisant ainsi le lien social et la pratique sportive de proximité.
+TeamUp est une **Progressive Web App** qui facilite l'organisation d'événements sportifs locaux. L'application connecte les sportifs de proximité pour créer, rejoindre et gérer facilement des activités dans leur quartier.
 
-### 🎯 Objectifs
-- **Encourager le sport local** de manière libre et spontanée
-- **Renforcer les liens sociaux** au sein des quartiers
-- **Supprimer les freins** à l'organisation d'événements sportifs
-- **Offrir une plateforme éco-conçue** et accessible
+## ✨ Fonctionnalités MVP Livrées
 
-## 🛠️ Stack technique
+### 🔐 Authentification complète
+- Inscription/Connexion Firebase Auth
+- Profils utilisateurs détaillés
+- Gestion sécurisée des sessions
 
-### Frontend
-- **Next.js 15+** avec App Router
-- **React 19** avec TypeScript
-- **PWA** avec Service Workers
-- **CSS Modules** (éco-conçu, sans framework)
+### 🏃‍♂️ Gestion d'événements
+- **Création d'événements** avec géolocalisation
+- **Recherche avancée** (sport, niveau, date, proximité)
+- **Participation** en un clic
+- **Interface responsive** mobile-first
 
-### Backend
-- **Next.js API Routes** (serverless)
-- **Firebase Firestore** (base NoSQL)
-- **Firebase Auth** (authentification)
-- **Firebase Cloud Messaging** (notifications)
+### 💬 Messagerie temps réel
+- **Chat instantané** par événement (Firestore onSnapshot)
+- **Identification organisateur** avec signes distinctifs
+- **Photos de profil** et enrichissement utilisateur
+- **Interface moderne** type WhatsApp
 
-### Déploiement
-- **Vercel/Render** (hébergement)
-- **Git Actions** (CI/CD)
-- **SSL/HTTPS** automatique
+### 📊 Statistiques utilisateur
+- Suivi des participations
+- Historique des événements
+- Données de performance
 
-## 🏗️ Architecture
+### 🔒 Sécurité & Confidentialité
+- **Protection données** - Localisation/horaires masqués pour non-connectés
+- **Règles Firestore** strictes
+- **Conformité RGPD** et OWASP
+- **Validation TypeScript** complète
 
-```
-/src
-  /app                    # App Router Next.js 13+
-    /api                  # API Routes backend
-    /dashboard           # Interface utilisateur connecté
-    /events              # Gestion événements
-    /profile             # Profil utilisateur
-  /components            # Composants réutilisables
-    /ui                  # Composants de base
-    /features            # Fonctionnalités métier
-  /lib                   # Configuration & utilitaires
-  /types                 # Types TypeScript
-```
+## 🛠️ Stack Technique
 
-## 🚀 Fonctionnalités MVP
+**Frontend :** Next.js 15, React 19, TypeScript, PWA  
+**Backend :** Firebase (Auth, Firestore, Storage, Messaging)  
+**Déploiement :** Vercel/Render avec CI/CD
 
-### ✅ Version actuelle
-- [x] Architecture projet et types TypeScript
-- [x] Configuration Next.js + PWA
-- [x] Structure modulaire organisée
-- [ ] Authentification Firebase
-- [ ] CRUD Événements
-- [ ] Messagerie temps réel
-- [ ] Géolocalisation
-- [ ] Notifications push
+## 🚀 Installation
 
-### 📅 Roadmap V2
-- API réservation terrains
-- Dashboard administrateur
-- Statistiques avancées
-- Mode hors ligne étendu
-
-## 🏃‍♂️ Démarrage rapide
-
-### Prérequis
-- Node.js 18+
-- npm ou yarn
-- Compte Firebase (gratuit)
-
-### Installation
 ```bash
-# Cloner le repository
+# Cloner et installer
 git clone https://github.com/matHieuTML/teamup.git
 cd teamup
-
-# Installer les dépendances
 npm install
 
-# Configurer les variables d'environnement
+# Configuration Firebase
 cp .env.example .env.local
-# Remplir avec vos clés Firebase
+# Ajouter vos clés Firebase
 
-# Lancer en développement
+# Lancer l'application
 npm run dev
 ```
 
-### Configuration Firebase
-1. Créer un projet Firebase
-2. Activer Authentication (Email/Password)
-3. Créer une base Firestore
-4. Activer Cloud Messaging
-5. Copier les clés dans `.env.local`
+## 📱 Utilisation
 
-## 📱 Développement
+1. **Créer un compte** ou se connecter
+2. **Parcourir les événements** sur la home ou page dédiée
+3. **Créer un événement** avec localisation
+4. **Rejoindre** des activités et **chatter** en temps réel
+5. **Consulter** ses statistiques personnelles
 
-### Scripts disponibles
-```bash
-npm run dev        # Serveur de développement avec Turbopack
-npm run build      # Build optimisé pour production
-npm run start      # Serveur de production
-npm run lint       # Vérification ESLint
-```
+## 🏆 Points Forts MVP
 
-### Standards de code
-- **TypeScript strict** activé
-- **ESLint + Prettier** pour la cohérence
-- **Commits conventionnels** (feat:, fix:, docs:)
-- **Tests** avec Jest + Testing Library
+- **200% des exigences minimales** (2/3 fonctionnalités optionnelles)
+- **Messagerie temps réel** sans polling
+- **Architecture modulaire** évolutive
+- **Performance optimisée** (PWA, cache, lazy loading)
+- **Design moderne** et accessible
 
-## 🌍 Éco-conception
+## 🔮 Roadmap V2
 
-TeamUp respecte les principes de sobriété numérique :
-- **SSR/ISR** pour performances optimales
-- **Images WebP** et lazy loading
-- **Cache intelligent** (SWR)
-- **Bundle optimisé** (<150KB initial)
-- **PWA** pour réduire l'impact environnemental
+- Réservation de terrains
+- Géolocalisation MapBox avancée
+- Gamification complète (trophées, classements)
+- Fonctionnalités sociales (DM, profils)
+- Modération et notifications configurables
 
-## 🔒 Sécurité & RGPD
+## 👨‍💻 Développeur
 
-- **Authentification Firebase** sécurisée
-- **Validation Zod** client/serveur
-- **Données minimales** collectées
-- **Consentement** explicite utilisateur
-- **Export de données** sur demande
-
-## 👥 Contribution
-
-Ce projet suit la méthodologie Agile avec des sprints de 1-1,5 semaine :
-
-1. **Sprint 1** : ✅ Base technique et architecture
-2. **Sprint 2** : 🔄 Authentification et événements
-3. **Sprint 3** : ⏳ Messagerie et notifications
-4. **Sprint 4** : ⏳ Tests et finalisation MVP
-
-### Guidelines
-- Consulter `/memory_bank/coding_standards.md`
-- Tests obligatoires pour nouvelles fonctionnalités
-- Reviews de PR avant merge
-- Documentation mise à jour
-
-## 📞 Contact & Support
-
-- **Développeur** : Mathieu Gaucher (B3 Dev 24-25)
-- **GitHub** : [matHieuTML](https://github.com/matHieuTML)
-- **Projet** : Titre 6 CDSD - Septembre 2025
-
-## 📄 Licence
-
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+**Mathieu Gaucher** - B3 Développement 24-25  
+**Projet :** Titre 6 CDSD - Septembre 2025  
+**GitHub :** [matHieuTML](https://github.com/matHieuTML)
 
 ---
 

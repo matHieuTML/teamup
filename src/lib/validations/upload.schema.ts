@@ -1,9 +1,7 @@
 import { z } from 'zod'
 
-// Types d'upload autorisés
 export const UploadTypeSchema = z.enum(['profile-picture', 'event-image', 'general'])
 
-// Types MIME autorisés pour les images
 export const AllowedImageTypesSchema = z.enum([
   'image/jpeg',
   'image/jpg', 
@@ -11,7 +9,6 @@ export const AllowedImageTypesSchema = z.enum([
   'image/webp'
 ])
 
-// Extensions de fichier autorisées
 export const AllowedExtensionsSchema = z.enum([
   'jpg',
   'jpeg',
@@ -19,22 +16,19 @@ export const AllowedExtensionsSchema = z.enum([
   'webp'
 ])
 
-// Schéma pour la validation d'un fichier côté client
 export const FileValidationSchema = z.object({
   name: z.string().min(1, 'Nom de fichier requis'),
   size: z.number()
     .min(1, 'Le fichier ne peut pas être vide')
-    .max(10 * 1024 * 1024, 'Fichier trop volumineux (max 10MB)'), // Limite générale haute
+    .max(10 * 1024 * 1024, 'Fichier trop volumineux (max 10MB)'),
   type: AllowedImageTypesSchema,
   lastModified: z.number().optional()
 })
 
-// Schéma pour les données d'upload d'API
 export const UploadRequestSchema = z.object({
   uploadType: UploadTypeSchema.default('general')
 })
 
-// Schéma pour la réponse d'upload
 export const UploadResponseSchema = z.object({
   success: z.boolean(),
   data: z.object({
@@ -46,10 +40,9 @@ export const UploadResponseSchema = z.object({
   error: z.string().optional()
 })
 
-// Règles de validation spécifiques par type d'upload
 export const UploadRulesSchema = z.object({
   'profile-picture': z.object({
-    maxSize: z.literal(2 * 1024 * 1024), // 2MB
+    maxSize: z.literal(2 * 1024 * 1024),
     allowedTypes: z.array(AllowedImageTypesSchema),
     minWidth: z.literal(150).optional(),
     minHeight: z.literal(150).optional(),
@@ -58,20 +51,19 @@ export const UploadRulesSchema = z.object({
     description: z.literal('Photo de profil (format carré, max 2MB)')
   }),
   'event-image': z.object({
-    maxSize: z.literal(8 * 1024 * 1024), // 8MB
+    maxSize: z.literal(8 * 1024 * 1024),
     allowedTypes: z.array(AllowedImageTypesSchema),
     minWidth: z.literal(400).optional(),
     minHeight: z.literal(300).optional(),
     description: z.literal('Image d\'événement (max 8MB)')
   }),
   'general': z.object({
-    maxSize: z.literal(5 * 1024 * 1024), // 5MB
+    maxSize: z.literal(5 * 1024 * 1024),
     allowedTypes: z.array(AllowedImageTypesSchema),
     description: z.literal('Image générale (max 5MB)')
   })
 })
 
-// Schéma pour les métadonnées de fichier
 export const FileMetadataSchema = z.object({
   originalName: z.string(),
   sanitizedName: z.string(),
@@ -87,9 +79,8 @@ export const FileMetadataSchema = z.object({
   uploadType: UploadTypeSchema
 })
 
-// Schéma pour la configuration d'upload
 export const UploadConfigSchema = z.object({
-  maxFileSize: z.number().positive().default(5 * 1024 * 1024), // 5MB par défaut
+  maxFileSize: z.number().positive().default(5 * 1024 * 1024),
   allowedTypes: z.array(AllowedImageTypesSchema).default(['image/jpeg', 'image/png', 'image/webp']),
   maxFiles: z.number().positive().default(1),
   compressionQuality: z.number().min(0.1).max(1).default(0.8),
@@ -100,7 +91,6 @@ export const UploadConfigSchema = z.object({
   }).optional()
 })
 
-// Schéma pour les erreurs d'upload
 export const UploadErrorSchema = z.object({
   code: z.enum([
     'FILE_TOO_LARGE',
@@ -117,7 +107,6 @@ export const UploadErrorSchema = z.object({
   details: z.record(z.string(), z.unknown()).optional()
 })
 
-// Types TypeScript dérivés des schémas
 export type UploadType = z.infer<typeof UploadTypeSchema>
 export type AllowedImageType = z.infer<typeof AllowedImageTypesSchema>
 export type AllowedExtension = z.infer<typeof AllowedExtensionsSchema>
@@ -128,12 +117,11 @@ export type FileMetadata = z.infer<typeof FileMetadataSchema>
 export type UploadConfig = z.infer<typeof UploadConfigSchema>
 export type UploadError = z.infer<typeof UploadErrorSchema>
 
-// Constantes de validation
 export const UPLOAD_CONSTANTS = {
   MAX_FILE_SIZE: {
-    PROFILE_PICTURE: 2 * 1024 * 1024, // 2MB
-    EVENT_IMAGE: 8 * 1024 * 1024,     // 8MB
-    GENERAL: 5 * 1024 * 1024          // 5MB
+    PROFILE_PICTURE: 2 * 1024 * 1024,
+    EVENT_IMAGE: 8 * 1024 * 1024,
+    GENERAL: 5 * 1024 * 1024
   },
   ALLOWED_TYPES: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'] as const,
   ALLOWED_EXTENSIONS: ['jpg', 'jpeg', 'png', 'webp'] as const,
@@ -146,13 +134,12 @@ export const UPLOAD_CONSTANTS = {
     GENERAL: { width: 1920, height: 1080 }
   },
   COMPRESSION: {
-    PROFILE_PICTURE: 0.9,  // Haute qualité pour les profils
-    EVENT_IMAGE: 0.85,     // Bonne qualité pour les événements
-    GENERAL: 0.8           // Qualité standard
+    PROFILE_PICTURE: 0.9,
+    EVENT_IMAGE: 0.85,
+    GENERAL: 0.8
   }
 } as const
 
-// Fonctions de validation
 export const validateUpload = {
   file: (file: File) => {
     const validation = FileValidationSchema.safeParse({
@@ -170,7 +157,6 @@ export const validateUpload = {
   config: (data: unknown) => UploadConfigSchema.safeParse(data)
 }
 
-// Validation spécifique par type d'upload
 export const getUploadRules = (uploadType: UploadType) => {
   switch (uploadType) {
     case 'profile-picture':
@@ -193,7 +179,7 @@ export const getUploadRules = (uploadType: UploadType) => {
         compressionQuality: UPLOAD_CONSTANTS.COMPRESSION.EVENT_IMAGE
       }
     
-    default: // 'general'
+    default:
       return {
         maxSize: UPLOAD_CONSTANTS.MAX_FILE_SIZE.GENERAL,
         allowedTypes: UPLOAD_CONSTANTS.ALLOWED_TYPES,
@@ -204,7 +190,6 @@ export const getUploadRules = (uploadType: UploadType) => {
   }
 }
 
-// Messages d'erreur personnalisés
 export const UploadErrorMessages = {
   FILE_TOO_LARGE: (maxSize: number) => 
     `Fichier trop volumineux. Taille maximum: ${(maxSize / (1024 * 1024)).toFixed(1)}MB`,

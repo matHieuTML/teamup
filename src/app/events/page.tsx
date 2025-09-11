@@ -12,7 +12,7 @@ import toast from 'react-hot-toast'
 import styles from './page.module.css'
 
 export default function EventsPage() {
-  const { user, loading: authLoading } = useAuthRedirect(false) // Ne pas rediriger si pas connecté
+  const { loading: authLoading } = useAuthRedirect(false)
   const [events, setEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isFilterOverlayOpen, setIsFilterOverlayOpen] = useState(false)
@@ -48,7 +48,6 @@ export default function EventsPage() {
     }
   }, [authLoading])
 
-  // Calcul de distance (formule haversine simplifiée)
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
     const R = 6371 // Rayon de la Terre en km
     const dLat = (lat2 - lat1) * Math.PI / 180
@@ -60,23 +59,16 @@ export default function EventsPage() {
     return R * c
   }
 
-  // Filtrage des événements
   const filteredEvents = useMemo(() => {
-    console.log('🚀 DÉBUT FILTRAGE - État initial:')
-    console.log('- Événements totaux:', events.length)
-    console.log('- Filtres actifs:', filters)
     
     let filtered = [...events]
 
-    // FILTRE PRINCIPAL: Exclure les événements passés (utilise EventService pour cohérence)
     const now = new Date()
     filtered = filtered.filter(event => {
       const eventDate = EventService.convertFirestoreDate(event.date)
       return eventDate >= now
     })
-    console.log('- Après filtre passés:', filtered.length)
 
-    // Filtre par recherche textuelle
     if (filters.search) {
       const searchLower = filters.search.toLowerCase()
       filtered = filtered.filter(event => 
@@ -84,41 +76,22 @@ export default function EventsPage() {
         event.description.toLowerCase().includes(searchLower) ||
         event.location_name.toLowerCase().includes(searchLower)
       )
-      console.log('- Après filtre recherche:', filtered.length)
     }
 
-    // Filtre par sport
     if (filters.sport !== 'all') {
       filtered = filtered.filter(event => event.type === filters.sport)
-      console.log('- Après filtre sport:', filtered.length)
     }
 
-    // Filtre par niveau - DEBUG
     if (filters.level !== 'all') {
-      console.log('🔍 FILTRAGE NIVEAU - DEBUG:')
-      console.log('- Filtre sélectionné:', `"${filters.level}"`)
-      console.log('- Événements avant filtrage:', filtered.length)
-      
-      filtered.forEach((event, index) => {
-        console.log(`Event ${index}: "${event.name}" - level_needed: "${event.level_needed}"`)
-      })
       
       filtered = filtered.filter(event => {
-        // Gérer les événements sans level_needed (undefined/null)
         if (!event.level_needed) {
-          console.log(`❌ Exclu "${event.name}": pas de level_needed`)
           return false
         }
-        
-        const match = event.level_needed === filters.level
-        console.log(`${match ? '✅' : '❌'} "${event.name}": "${event.level_needed}" === "${filters.level}" ? ${match}`)
-        return match
+        return event.level_needed === filters.level
       })
-      
-      console.log('- Événements après filtrage:', filtered.length)
     }
 
-    // Filtre par date (maintenant que les événements passés sont exclus)
     if (filters.dateRange !== 'all') {
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
       
@@ -140,7 +113,6 @@ export default function EventsPage() {
       })
     }
 
-    // Filtre par géolocalisation
     if (filters.nearMe && filters.userLocation && filters.maxDistance) {
       filtered = filtered.filter(event => {
         const distance = calculateDistance(
@@ -153,7 +125,6 @@ export default function EventsPage() {
       })
     }
 
-    // Trier par date (plus proches en premier)
     filtered.sort((a, b) => {
       const dateA = EventService.convertFirestoreDate(a.date)
       const dateB = EventService.convertFirestoreDate(b.date)

@@ -24,54 +24,43 @@ export function EventChat({ eventId, isOrganizer, isParticipant }: EventChatProp
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const unsubscribeRef = useRef<(() => void) | null>(null)
 
-  // Charger les messages
-  const loadMessages = useCallback(async () => {
+  // Écouter les messages en temps réel
+  const subscribeToMessages = useCallback(() => {
     if (!eventId) return
 
     try {
       setError(null)
-      const fetchedMessages = await MessageService.getEventMessages(eventId, 50, 0)
+      setLoading(true)
       
-      // Trier par date (plus récents en bas)
-      const sortedMessages = fetchedMessages.sort((a, b) => {
-        const dateA = a.time instanceof Date ? a.time : 
-          (a.time && typeof a.time === 'object' && (a.time.seconds || (a.time as any)._seconds)) ? 
-            new Date((a.time.seconds || (a.time as any)._seconds) * 1000) : 
-            new Date(a.time as string || 0)
-        const dateB = b.time instanceof Date ? b.time : 
-          (b.time && typeof b.time === 'object' && (b.time.seconds || (b.time as any)._seconds)) ? 
-            new Date((b.time.seconds || (b.time as any)._seconds) * 1000) : 
-            new Date(b.time as string || 0)
-        return dateA.getTime() - dateB.getTime()
-      })
+      // S'abonner aux messages en temps réel
+      const unsubscribe = MessageService.subscribeToEventMessages(
+        eventId,
+        (newMessages) => {
+          setMessages(newMessages)
+          setLoading(false)
+        },
+        (error) => {
+          console.error('Erreur temps réel:', error)
+          setError('Problème de connexion temps réel')
+          setLoading(false)
+        }
+      )
       
-      setMessages(sortedMessages)
+      unsubscribeRef.current = unsubscribe
     } catch (err) {
-      console.error('Erreur lors du chargement des messages:', err)
+      console.error('Erreur lors de l\'abonnement aux messages:', err)
       setError('Impossible de charger les messages')
-    } finally {
       setLoading(false)
     }
   }, [eventId])
 
-  // Polling pour les nouveaux messages
-  const startPolling = useCallback(() => {
-    if (pollIntervalRef.current) {
-      clearInterval(pollIntervalRef.current)
-    }
-    
-    pollIntervalRef.current = setInterval(() => {
-      loadMessages()
-    }, 3000) // Poll toutes les 3 secondes
-  }, [loadMessages])
-
-  // Arrêter le polling
-  const stopPolling = useCallback(() => {
-    if (pollIntervalRef.current) {
-      clearInterval(pollIntervalRef.current)
-      pollIntervalRef.current = null
+  // Nettoyer l'abonnement
+  const unsubscribeFromMessages = useCallback(() => {
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current()
+      unsubscribeRef.current = null
     }
   }, [])
 
@@ -90,18 +79,15 @@ export function EventChat({ eventId, isOrganizer, isParticipant }: EventChatProp
       setSending(true)
       setError(null)
 
-      await MessageService.sendMessage({
+      await MessageService.sendMessageDirect({
         id_event: eventId,
         content: newMessage.trim()
       })
 
       setNewMessage('')
     
-    // Déclencher le scroll automatique après l'envoi
-    setShouldAutoScroll(true)
-    
-    // Recharger les messages immédiatement
-    await loadMessages()
+      // Déclencher le scroll automatique après l'envoi
+      setShouldAutoScroll(true)
     
     // Auto-resize textarea
     if (textareaRef.current) {
@@ -123,7 +109,6 @@ export function EventChat({ eventId, isOrganizer, isParticipant }: EventChatProp
       await MessageService.updateMessage(messageId, editingContent.trim())
       setEditingMessageId(null)
       setEditingContent('')
-      await loadMessages()
     } catch (err) {
       console.error('Erreur lors de la modification:', err)
       setError('Impossible de modifier le message')
@@ -136,7 +121,6 @@ export function EventChat({ eventId, isOrganizer, isParticipant }: EventChatProp
 
     try {
       await MessageService.deleteMessage(messageId)
-      await loadMessages()
     } catch (err) {
       console.error('Erreur lors de la suppression:', err)
       setError('Impossible de supprimer le message')
@@ -163,13 +147,12 @@ export function EventChat({ eventId, isOrganizer, isParticipant }: EventChatProp
 
   // Effets
   useEffect(() => {
-    loadMessages()
-    startPolling()
+    subscribeToMessages()
     
     return () => {
-      stopPolling()
+      unsubscribeFromMessages()
     }
-  }, [loadMessages, startPolling, stopPolling])
+  }, [subscribeToMessages, unsubscribeFromMessages])
 
   useEffect(() => {
     // Ne faire le scroll automatique que si c'est demandé (après envoi d'un message)
@@ -265,11 +248,11 @@ export function EventChat({ eventId, isOrganizer, isParticipant }: EventChatProp
                     )}
                     <span className={styles.authorName}>
                       {message.user?.name || 'Utilisateur'}
-                      {message.from_organizer && <span className={styles.organizerIcon}>👑</span>}
                     </span>
                   </div>
                   <div className={styles.messageActions}>
                     <span className={styles.messageTime}>
+                      {message.from_organizer && '👑 '}
                       {MessageService.formatMessageTime(message.time)}
                     </span>
                     {canModifyMessage(message) && (

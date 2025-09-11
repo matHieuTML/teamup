@@ -414,7 +414,10 @@
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .filterPanel {
-    max-height: 85vh;
+    max-height: calc(100vh - 135px); /* Ajusté pour la hauteur réelle de la navbar + marge */
+    bottom: 0; /* Aligné avec le bas de l'écran */
+    margin-bottom: 115px; /* Pousse le panel au-dessus de la navbar (80px + 35px) */
+    transform: translateY(0); /* Force le positionnement correct */
   }
   
   .sportsGrid {

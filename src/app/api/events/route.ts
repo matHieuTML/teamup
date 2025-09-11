@@ -3,10 +3,7 @@ import { adminDB, initializeFirebaseAdmin } from '@/lib/firebase-admin'
 import { SportType, EventVisibility } from '@/types/database'
 import { FieldValue } from 'firebase-admin/firestore'
 
-// Initialiser Firebase Admin
 initializeFirebaseAdmin()
-
-// GET - Récupérer tous les événements ou un événement spécifique
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -20,7 +17,6 @@ export async function GET(request: NextRequest) {
     }
 
     if (id) {
-      // Récupérer un événement spécifique
       const eventDoc = await adminDB.collection('events').doc(id).get()
       
       if (!eventDoc.exists) {
@@ -35,8 +31,6 @@ export async function GET(request: NextRequest) {
       let events: Array<{ id: string; visibility?: string; type?: string; date?: any; created_by?: string; [key: string]: any }> = []
 
       if (userId) {
-        // Requête simple pour les événements d'un utilisateur spécifique
-        // Évite l'index composite en ne faisant qu'un seul filtre
         const eventsSnapshot = await adminDB
           .collection('events')
           .where('created_by', '==', userId)
@@ -47,14 +41,12 @@ export async function GET(request: NextRequest) {
           ...doc.data()
         }))
 
-        // Trier côté serveur par date
         events.sort((a, b) => {
           const dateA = a.date?.seconds ? new Date(a.date.seconds * 1000) : new Date(a.date || 0)
           const dateB = b.date?.seconds ? new Date(b.date.seconds * 1000) : new Date(b.date || 0)
           return dateA.getTime() - dateB.getTime()
         })
       } else {
-        // Requête pour tous les événements publics avec filtrage conditionnel
         const finalQuery = sportType 
           ? adminDB.collection('events').where('type', '==', sportType).orderBy('date', 'asc').limit(limit * 2)
           : adminDB.collection('events').orderBy('date', 'asc').limit(limit * 2)
@@ -65,21 +57,17 @@ export async function GET(request: NextRequest) {
           ...doc.data()
         }))
 
-        // Filtrer côté serveur pour les événements publics
         events = events.filter(event => event.visibility === EventVisibility.PUBLIC || event.visibility === 'public')
       }
 
-      // Enrichir avec le nombre de participants réel et leurs données
       const eventsWithParticipants = await Promise.all(
         events.map(async (event) => {
           try {
-            // Récupérer les participants pour cet événement
             const participantsSnapshot = await adminDB!
               .collection('userEvents')
               .where('id_event', '==', event.id)
               .get()
             
-            // Récupérer les données des participants (max 3 pour les avatars)
             const participantsData = []
             const participantsDocs = participantsSnapshot.docs.slice(0, 3)
             
@@ -117,7 +105,6 @@ export async function GET(request: NextRequest) {
         })
       )
 
-      // Limiter après enrichissement
       const finalEvents = eventsWithParticipants.slice(0, limit)
       const total = finalEvents.length
       const hasMore = finalEvents.length === limit
@@ -138,7 +125,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Créer un nouvel événement
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -161,7 +147,6 @@ export async function POST(request: NextRequest) {
       visibility = EventVisibility.PUBLIC
     } = body
 
-    // Validation des champs obligatoires
     if (!name || !type || !description || !location_name || !latitude || !longitude || !date || !created_by) {
       return NextResponse.json(
         { error: 'Champs obligatoires manquants: name, type, description, location_name, latitude, longitude, date, created_by' },
@@ -173,13 +158,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Firebase Admin non configuré' }, { status: 500 })
     }
 
-    // Vérifier que l'utilisateur créateur existe
     const userDoc = await adminDB.collection('users').doc(created_by).get()
     if (!userDoc.exists) {
       return NextResponse.json({ error: 'Utilisateur créateur non trouvé' }, { status: 404 })
     }
 
-    // Construire l'objet eventData en filtrant les valeurs undefined
     const eventData: any = {
       name,
       type,
@@ -195,7 +178,6 @@ export async function POST(request: NextRequest) {
       visibility
     }
 
-    // Ajouter les champs optionnels seulement s'ils ne sont pas undefined
     if (level_needed) eventData.level_needed = level_needed
     if (location_id) eventData.location_id = location_id
     if (picture_url) eventData.picture_url = picture_url
@@ -206,8 +188,6 @@ export async function POST(request: NextRequest) {
     const docRef = await adminDB.collection('events').add(eventData)
     const eventId = docRef.id
 
-    // Créer automatiquement l'entrée UserEvent pour l'organisateur
-    // Selon la structure: Table UserEvent { id_user, id_event, role, joined_at }
     const userEventData = {
       id_user: created_by,
       id_event: eventId,
@@ -217,7 +197,6 @@ export async function POST(request: NextRequest) {
 
     await adminDB.collection('userEvents').add(userEventData)
 
-    // Incrémenter le compteur d'événements créés de l'utilisateur
     await adminDB.collection('users').doc(created_by).update({
       number_event_created: FieldValue.increment(1),
       updated_at: new Date()
@@ -237,7 +216,6 @@ export async function POST(request: NextRequest) {
     )}
 }
 
-// PUT - Mettre à jour un événement
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json()
@@ -251,19 +229,16 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Firebase Admin non configuré' }, { status: 500 })
     }
 
-    // Vérifier que l'événement existe
     const eventDoc = await adminDB.collection('events').doc(id).get()
     if (!eventDoc.exists) {
       return NextResponse.json({ error: 'Événement non trouvé' }, { status: 404 })
     }
 
-    // Mettre à jour avec updated_at et conversion des types si nécessaire
     const updateFields: Record<string, unknown> = {
       ...updateData,
       updated_at: new Date()
     }
 
-    // Convertir les types numériques si présents
     if (updateFields.latitude && typeof updateFields.latitude === 'string') {
       updateFields.latitude = parseFloat(updateFields.latitude)
     }
@@ -298,7 +273,6 @@ export async function PUT(request: NextRequest) {
     )}
 }
 
-// DELETE - Supprimer un événement
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -312,7 +286,6 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Firebase Admin non configuré' }, { status: 500 })
     }
 
-    // Vérifier que l'événement existe
     const eventDoc = await adminDB.collection('events').doc(id).get()
     if (!eventDoc.exists) {
       return NextResponse.json({ error: 'Événement non trouvé' }, { status: 404 })
@@ -320,10 +293,8 @@ export async function DELETE(request: NextRequest) {
 
     const eventData = eventDoc.data()
 
-    // Supprimer l'événement
     await adminDB.collection('events').doc(id).delete()
 
-    // Supprimer toutes les inscriptions associées
     const userEventsSnapshot = await adminDB
       .collection('userEvents')
       .where('id_event', '==', id)
@@ -334,7 +305,6 @@ export async function DELETE(request: NextRequest) {
       batch.delete(doc.ref)
     })
 
-    // Supprimer tous les messages associés
     const messagesSnapshot = await adminDB
       .collection('messages')
       .where('id_event', '==', id)
@@ -346,7 +316,6 @@ export async function DELETE(request: NextRequest) {
 
     await batch.commit()
 
-    // Décrémenter le compteur d'événements créés de l'utilisateur
     if (eventData?.created_by) {
       await adminDB.collection('users').doc(eventData.created_by).update({
         number_event_created: FieldValue.increment(-1),

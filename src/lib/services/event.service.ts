@@ -4,7 +4,6 @@ import { Event } from '@/types/database'
 export class EventService {
   private static baseUrl = '/api/events'
 
-  // Créer un événement
   static async createEvent(formData: EventFormData, pictureUrl?: string): Promise<{ success: boolean; eventId?: string; error?: string }> {
     try {
       // Récupérer l'utilisateur authentifié
@@ -41,7 +40,7 @@ export class EventService {
         average_speed: formData.average_speed,
         distance: formData.distance,
         picture_url: pictureUrl,
-        created_by: userId // Champ obligatoire manquant
+        created_by: userId
       }
 
       const token = await this.getAuthToken()
@@ -74,7 +73,6 @@ export class EventService {
     }
   }
 
-  // Mettre à jour un événement
   static async updateEvent(eventId: string, formData: EventFormData, pictureUrl?: string): Promise<{ success: boolean; error?: string }> {
     try {
       // Récupérer l'utilisateur authentifié

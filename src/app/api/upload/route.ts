@@ -3,15 +3,12 @@ import { initializeFirebaseAdmin, adminAuth } from '@/lib/firebase-admin'
 import { imageUploadService } from '@/lib/services/image-upload.service'
 import { z } from 'zod'
 
-// Initialiser Firebase Admin avec le module centralisé
 initializeFirebaseAdmin()
 
-// Validation du type d'upload
 const uploadTypeSchema = z.enum(['profile-picture', 'event-image', 'general'])
 
 export async function POST(request: NextRequest) {
   try {
-    // Vérification de l'authentification
     const authHeader = request.headers.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -38,7 +35,6 @@ export async function POST(request: NextRequest) {
 
     const userId = decodedToken.uid
 
-    // Parsing des données form-data
     const formData = await request.formData()
     const file = formData.get('file') as File
     const uploadType = formData.get('uploadType') as string || 'general'
@@ -50,7 +46,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validation du type d'upload
     const validatedUploadType = uploadTypeSchema.safeParse(uploadType)
     if (!validatedUploadType.success) {
       return NextResponse.json(
@@ -62,7 +57,6 @@ export async function POST(request: NextRequest) {
     let uploadResult
 
     try {
-      // Upload spécialisé selon le type
       switch (validatedUploadType.data) {
         case 'profile-picture':
           uploadResult = await imageUploadService.uploadProfilePicture(file, userId)
@@ -71,7 +65,7 @@ export async function POST(request: NextRequest) {
         case 'event-image':
           uploadResult = await imageUploadService.uploadImage(file, userId, {
             folder: 'event-images',
-            maxSizeBytes: 8 * 1024 * 1024, // 8MB pour les événements
+            maxSizeBytes: 8 * 1024 * 1024,
             quality: 0.85
           })
           break
@@ -115,7 +109,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET pour récupérer les informations d'upload autorisées
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization')
@@ -146,17 +139,17 @@ export async function GET(request: NextRequest) {
         uploadTypes: ['profile-picture', 'event-image', 'general'],
         limits: {
           'profile-picture': {
-            maxSize: 2 * 1024 * 1024, // 2MB
+            maxSize: 2 * 1024 * 1024,
             allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
             description: 'Photo de profil (format carré, max 2MB)'
           },
           'event-image': {
-            maxSize: 8 * 1024 * 1024, // 8MB
+            maxSize: 8 * 1024 * 1024,
             allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
             description: 'Image d\'événement (max 8MB)'
           },
           'general': {
-            maxSize: 5 * 1024 * 1024, // 5MB
+            maxSize: 5 * 1024 * 1024,
             allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
             description: 'Image générale (max 5MB)'
           }

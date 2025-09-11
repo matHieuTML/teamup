@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Event } from '@/types/database'
 import { EventService } from '@/lib/services/event.service'
+import { useAuth } from '@/contexts/AuthContext'
 import styles from './EventCard.module.css'
 
 interface EventCardProps {
@@ -20,28 +21,19 @@ interface EventCardProps {
 }
 
 export function EventCard({ event }: EventCardProps) {
+  const { user } = useAuth()
   const eventDate = EventService.convertFirestoreDate(event.date)
   const isPast = eventDate < new Date()
   const participantsCount = event.participants_count || 0
   const participants = event.participants || []
+  const isAuthenticated = !!user
 
-  // Debug: Log des données pour diagnostic
-  console.log('🔍 EventCard Debug:', {
-    eventId: event.id,
-    eventName: event.name,
-    participantsCount,
-    participants,
-    participantsLength: participants.length
-  })
-
-  // Fonction pour obtenir les initiales d'un nom
   const getInitials = (name: string): string => {
     const initials = name
       .split(' ')
       .map(word => word.charAt(0).toUpperCase())
       .slice(0, 2)
       .join('')
-    console.log(`🔍 getInitials("${name}") = "${initials}"`)
     return initials
   }
 
@@ -89,22 +81,22 @@ export function EventCard({ event }: EventCardProps) {
           {event.name.toUpperCase()}
         </h3>
         
-        <div className={styles.location}>
+        <div className={`${styles.location} ${!isAuthenticated ? styles.blurred : ''}`}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
             <circle cx="12" cy="10" r="3"/>
           </svg>
-          {event.location_name}
+          {isAuthenticated ? event.location_name : 'Connectez-vous pour voir'}
         </div>
 
-        <div className={styles.dateTime}>
+        <div className={`${styles.dateTime} ${!isAuthenticated ? styles.blurred : ''}`}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
             <line x1="16" y1="2" x2="16" y2="6"/>
             <line x1="8" y1="2" x2="8" y2="6"/>
             <line x1="3" y1="10" x2="21" y2="10"/>
           </svg>
-          {EventService.formatEventDate(event.date)} à {EventService.formatEventTime(event.date)}
+          {isAuthenticated ? `${EventService.formatEventDate(event.date)} à ${EventService.formatEventTime(event.date)}` : 'Connectez-vous pour voir'}
         </div>
 
         <div className={styles.participantsRow}>
@@ -113,7 +105,6 @@ export function EventCard({ event }: EventCardProps) {
               {participants.length > 0 ? (
                 <>
                   {participants.slice(0, 3).map((participant, i) => {
-                    console.log(`🔍 Rendering avatar ${i + 1}:`, participant.name, participant.profile_picture_url)
                     return (
                       <div key={participant.id} className={`${styles.avatar} ${styles[`avatar${i + 1}`]}`}>
                         {participant.profile_picture_url ? (

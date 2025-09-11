@@ -5,11 +5,14 @@ import Link from 'next/link'
 import { Button } from '../../ui'
 import { Event } from '@/types/database'
 import { EventService } from '@/lib/services/event.service'
+import { useAuth } from '@/contexts/AuthContext'
 import '../../../styles/components/EventsCarousel.css'
 
 const EventsCarousel = () => {
+  const { user } = useAuth()
   const [events, setEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const isAuthenticated = !!user
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -28,9 +31,6 @@ const EventsCarousel = () => {
               return eventDate > now
             })
             
-            // L'API /api/events inclut déjà les participants dans la réponse
-            // Pas besoin d'appels API supplémentaires
-            console.log('✅ CARROUSEL - Événements avec participants déjà inclus:', futureEvents.length)
             
             setEvents(futureEvents.slice(0, 5))
           } else {
@@ -132,20 +132,20 @@ const EventsCarousel = () => {
                       {event.name.toUpperCase()}
                     </h3>
                     
-                    <div className="events-carousel__datetime">
+                    <div className={`events-carousel__datetime ${!isAuthenticated ? 'blurred' : ''}`}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <circle cx="12" cy="12" r="10"/>
                         <polyline points="12,6 12,12 16,14"/>
                       </svg>
-                      {formatDateTime(event.date)}
+                      {isAuthenticated ? formatDateTime(event.date) : 'Connectez-vous pour voir'}
                     </div>
                     
-                    <div className="events-carousel__location">
+                    <div className={`events-carousel__location ${!isAuthenticated ? 'blurred' : ''}`}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                         <circle cx="12" cy="10" r="3"/>
                       </svg>
-                      {event.location_name}
+                      {isAuthenticated ? event.location_name : 'Connectez-vous pour voir'}
                     </div>
 
                     <div className="events-carousel__participants-row">

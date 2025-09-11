@@ -185,22 +185,25 @@
   border-radius: 18px;
   box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
   position: relative;
+  border: 2px solid #ffd700;
 }
 
 .organizerMessage .messageContent::before {
   content: '👑';
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -10px;
+  right: -10px;
   background: #ffffff;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid #ffd700;
+  z-index: 10;
 }
 
 @keyframes messageSlideIn {
@@ -230,29 +233,33 @@
 }
 
 .authorAvatar {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .authorAvatarDefault {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: #007bff;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .authorName {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  color: #6c757d;
+  color: #495057;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -262,12 +269,30 @@
   color: #007bff;
 }
 
+.ownMessage .authorAvatarDefault {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
 .organizerMessage .authorName {
   color: #e0a800;
+  position: relative;
+}
+
+
+.organizerMessage .authorAvatarDefault {
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+  color: #000000;
+}
+
+.organizerMessage .authorAvatar {
+  border: 2px solid #ffc107;
+  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
 }
 
 .organizerIcon {
-  font-size: 10px;
+  font-size: 12px;
+  margin-left: 4px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 .messageActions {
@@ -280,14 +305,26 @@
   font-size: 11px;
   color: #9ca3af;
   font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .ownMessage .messageTime {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 10px;
 }
 
 .organizerMessage .messageTime {
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 10px;
 }
 
 .messageMenu {

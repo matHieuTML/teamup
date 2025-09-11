@@ -47,7 +47,6 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Obtenir les règles de validation selon le type d'upload
   const getValidationRules = useCallback((): ImageValidationRules => {
     if (validationRules) return validationRules
 
@@ -61,24 +60,19 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
     }
   }, [uploadType, validationRules])
 
-  // Valider un fichier
   const validateFile = useCallback(async (file: File) => {
     const rules = getValidationRules()
     return await ImageUtils.validateImageFile(file, rules)
   }, [getValidationRules])
 
-  // Créer une prévisualisation
   const createPreview = useCallback((file: File) => {
     const previewUrl = URL.createObjectURL(file)
     setState(prev => ({ ...prev, previewUrl }))
     
-    // Nettoyer l'ancienne URL si elle existe
     return () => URL.revokeObjectURL(previewUrl)
   }, [])
 
-  // Upload d'un fichier
   const uploadFile = useCallback(async (file: File) => {
-    // Reset de l'état
     setState({
       isUploading: true,
       progress: 0,
@@ -88,33 +82,26 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
     })
 
     try {
-      // Validation du fichier
       const validation = await validateFile(file)
       if (!validation.isValid) {
         throw new Error(validation.error || 'Fichier invalide')
       }
 
-      // Création de la prévisualisation
       createPreview(file)
 
-      // Vérification de l'authentification
       const user = auth.currentUser
       if (!user) {
         throw new Error('Vous devez être connecté pour uploader des images')
       }
 
-      // Obtention du token d'authentification
       const token = await user.getIdToken()
 
-      // Création du FormData
       const formData = new FormData()
       formData.append('file', file)
       formData.append('uploadType', uploadType)
 
-      // Mise à jour du progrès
       setState(prev => ({ ...prev, progress: 25 }))
 
-      // Envoi de la requête
       const response = await fetch('/api/upload', {
         method: 'POST',
         headers: {
@@ -131,7 +118,6 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
         throw new Error(result.error || 'Erreur lors de l\'upload')
       }
 
-      // Success
       setState(prev => ({
         ...prev,
         isUploading: false,
@@ -140,7 +126,6 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
         error: null
       }))
 
-      // Callbacks
       onUploadSuccess?.(result.data!.url)
       toast.success('Image uploadée avec succès!')
 
@@ -163,7 +148,6 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
     }
   }, [uploadType, validateFile, createPreview, onUploadSuccess, onUploadError])
 
-  // Gérer la sélection de fichier via input
   const handleFileSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
@@ -171,7 +155,6 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
     }
   }, [uploadFile])
 
-  // Gérer le drag & drop
   const handleDrop = useCallback((event: React.DragEvent<HTMLElement>) => {
     event.preventDefault()
     const file = event.dataTransfer.files[0]
@@ -188,7 +171,6 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
     event.preventDefault()
   }, [])
 
-  // Ouvrir le sélecteur de fichier
   const openFileSelector = useCallback(() => {
     fileInputRef.current?.click()
   }, [])
@@ -203,13 +185,11 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
       previewUrl: null
     })
 
-    // Reset de l'input file
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
   }, [])
 
-  // Nettoyer la prévisualisation
   const clearPreview = useCallback(() => {
     if (state.previewUrl) {
       URL.revokeObjectURL(state.previewUrl)
@@ -217,7 +197,6 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
     setState(prev => ({ ...prev, previewUrl: null }))
   }, [state.previewUrl])
 
-  // Obtenir les informations sur les limites d'upload
   const getUploadLimits = useCallback(() => {
     const rules = getValidationRules()
     return {
@@ -231,10 +210,8 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
   }, [getValidationRules])
 
   return {
-    // État
     ...state,
     
-    // Actions
     uploadFile,
     handleFileSelect,
     handleDrop,
@@ -244,11 +221,9 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
     reset,
     clearPreview,
     
-    // Utilitaires
     getUploadLimits,
     validateFile,
     
-    // Refs
     fileInputRef
   }
 }

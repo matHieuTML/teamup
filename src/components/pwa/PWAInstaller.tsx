@@ -20,20 +20,17 @@ export function PWAInstaller() {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Register service worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
         .register('/sw.js')
         .then((registration) => {
           console.log('PWA: Service Worker registered successfully:', registration.scope)
           
-          // Check for updates
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing
             if (newWorker) {
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // New content available, show update notification
                   if (confirm('Une nouvelle version de TeamUp est disponible. Voulez-vous la charger ?')) {
                     newWorker.postMessage({ type: 'SKIP_WAITING' })
                     window.location.reload()
@@ -48,33 +45,28 @@ export function PWAInstaller() {
         })
     }
 
-    // Check if app is already installed
     if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true)
       console.log('PWA: App is running in standalone mode')
     }
 
-    // Listen for beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
       const promptEvent = e as BeforeInstallPromptEvent
       setDeferredPrompt(promptEvent)
       
-      // Delay showing the button to ensure proper detection
       setTimeout(() => {
         setShowInstallButton(true)
         console.log('PWA: Install prompt available')
       }, 1000)
     }
 
-    // Listen for app installed event
     const handleAppInstalled = () => {
       setIsInstalled(true)
       setShowInstallButton(false)
       setDeferredPrompt(null)
       console.log('PWA: App installed successfully')
       
-      // Track installation
       if (typeof window !== 'undefined' && 'gtag' in window) {
         const gtag = (window as { gtag?: (...args: unknown[]) => void }).gtag
         if (gtag) {
@@ -86,13 +78,11 @@ export function PWAInstaller() {
       }
     }
 
-    // Add a small delay to ensure DOM is ready
     const timer = setTimeout(() => {
       window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
       window.addEventListener('appinstalled', handleAppInstalled)
     }, 500)
 
-    // Cleanup
     return () => {
       clearTimeout(timer)
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
@@ -124,26 +114,21 @@ export function PWAInstaller() {
     setShowInstallButton(false)
     setDeferredPrompt(null)
     
-    // Remember user dismissed (localStorage)
     localStorage.setItem('pwa-install-dismissed', Date.now().toString())
   }
 
-  // Don't show if already installed or user recently dismissed
   if (isInstalled || !showInstallButton) {
     return null
   }
 
-  // Check if user recently dismissed
   const dismissedTime = localStorage.getItem('pwa-install-dismissed')
   if (dismissedTime && Date.now() - parseInt(dismissedTime) < 7 * 24 * 60 * 60 * 1000) {
-    return null // Don't show for 7 days after dismissal
+    return null
   }
 
-  // On mobile, only show on home page
   const isHomePage = pathname === '/'
   const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
   
-  // Hide on mobile if not on home page
   if (isMobile && !isHomePage) {
     return null
   }
@@ -177,13 +162,11 @@ export function PWAInstaller() {
   )
 }
 
-// Hook for PWA features
 export function usePWA() {
   const [isOnline, setIsOnline] = useState(true)
   const [isInstalled, setIsInstalled] = useState(false)
 
   useEffect(() => {
-    // Check online status
     setIsOnline(navigator.onLine)
 
     const handleOnline = () => setIsOnline(true)
@@ -192,7 +175,6 @@ export function usePWA() {
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
 
-    // Check if installed
     if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true)
     }
