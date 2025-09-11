@@ -28,7 +28,7 @@ const navItems: NavItem[] = [
   },
   { 
     id: 'create', 
-    label: 'Create', 
+    label: 'Teamup', 
     icon: CreateIcon, 
     path: '/create', 
     isPrimary: true 
@@ -41,7 +41,7 @@ const navItems: NavItem[] = [
   },
   { 
     id: 'profile', 
-    label: 'Profile', 
+    label: 'Profil', 
     icon: ProfileIcon, 
     path: '/profile' 
   }

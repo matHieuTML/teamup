@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { Button, Section } from '../../ui'
 import '../../../styles/components/HeroSection.css'
 
@@ -39,20 +40,24 @@ const HeroSection = () => {
         </p>
 
         <div className="hero-section__buttons">
-          <Button 
-            variant="gradient" 
-            size="xl"
-            className="hero-section__button"
-          >
-            Commencer maintenant
-          </Button>
-          <Button 
-            variant="secondary" 
-            size="xl"
-            className="hero-section__button"
-          >
-            Découvrir les événements
-          </Button>
+          <Link href="/events">
+            <Button 
+              variant="gradient" 
+              size="xl"
+              className="hero-section__button"
+            >
+              Voir les événements
+            </Button>
+          </Link>
+          <Link href="/profile">
+            <Button 
+              variant="secondary" 
+              size="xl"
+              className="hero-section__button"
+            >
+              Gérer mon profil
+            </Button>
+          </Link>
         </div>
 
         <div className="hero-section__stats">

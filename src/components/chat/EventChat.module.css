@@ -163,7 +163,7 @@
 .ownMessage .messageContent {
   background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
   color: white;
-  border-radius: 18px 18px 18px 4px;
+  border-radius: 18px;
   box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
 }
 
@@ -174,7 +174,7 @@
 .otherMessage .messageContent {
   background: #ffffff;
   color: #333333;
-  border-radius: 18px 18px 18px 4px;
+  border-radius: 18px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
 }
@@ -182,7 +182,7 @@
 .organizerMessage .messageContent {
   background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
   color: #000000;
-  border-radius: 18px 18px 4px 18px;
+  border-radius: 18px;
   box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
   position: relative;
 }

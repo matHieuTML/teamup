@@ -105,15 +105,3 @@ export interface AuthContextType {
   register: (email: string, password: string, name: string) => Promise<void>
   logout: () => Promise<void>
 }
-
-// Types pour les formulaires
-export interface RegisterFormData {
-  email: string
-  password: string
-  name: string
-}
-
-export interface LoginFormData {
-  email: string
-  password: string
-}

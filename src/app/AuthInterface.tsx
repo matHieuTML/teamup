@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { LoginForm } from '@/components/auth/LoginForm'
 import { RegisterForm } from '@/components/auth/RegisterForm'
 import '../styles/components/auth-tabs.css'
 
-export default function AuthInterface() {
+function AuthInterfaceContent() {
   const { user, logout, loading } = useAuth()
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login')
   const router = useRouter()
@@ -17,7 +17,7 @@ export default function AuthInterface() {
     if (user && !loading) {
       const redirectTo = searchParams.get('redirect')
       if (redirectTo) {
-        router.push(decodeURIComponent(redirectTo))
+        router.push(decodeURIComponent(redirectTo) as any)
       } else {
         router.push('/')
       }
@@ -92,5 +92,13 @@ export default function AuthInterface() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AuthInterface() {
+  return (
+    <Suspense fallback={<div className="auth-tabs__loading">Chargement...</div>}>
+      <AuthInterfaceContent />
+    </Suspense>
   )
 }

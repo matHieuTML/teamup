@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { LoginFormData } from '@/types/database'
+import { LoginFormData } from '@/types/forms'
 import '../../styles/components/auth-forms.css'
 
 interface LoginFormProps {
@@ -25,6 +25,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       setFormError('Veuillez remplir tous les champs')
       return
     }
+
 
     try {
       await login(formData.email, formData.password)

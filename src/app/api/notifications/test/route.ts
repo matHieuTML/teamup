@@ -227,10 +227,10 @@ export async function POST(request: NextRequest) {
 
     console.error('🔔 API: ========== SERVER NOTIFICATION ERROR ANALYSIS ==========')
     console.error('🔔 API: Error analysis:')
-    console.error('🔔 API: - Error type:', error.constructor.name)
-    console.error('🔔 API: - Error code:', error.code)
-    console.error('🔔 API: - Error message:', error.message)
-    console.error('🔔 API: - Error stack:', error.stack)
+    console.error('🔔 API: - Error type:', (error as any)?.constructor?.name)
+    console.error('🔔 API: - Error code:', (error as any)?.code)
+    console.error('🔔 API: - Error message:', (error as any)?.message)
+    console.error('🔔 API: - Error stack:', (error as any)?.stack)
     
     // Gestion des erreurs spécifiques FCM V1
     const errorMessage = (error as Error).message

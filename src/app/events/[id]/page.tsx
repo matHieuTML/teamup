@@ -137,18 +137,17 @@ const EventDetailPage = () => {
 
   const getSportEmoji = (sport: string) => {
     const sportEmojis: { [key: string]: string } = {
+      'foot': '⚽',
       'football': '⚽',
+      'basket': '🏀',
       'basketball': '🏀',
       'tennis': '🎾',
-      'running': '🏃',
-      'cycling': '🚴',
-      'swimming': '🏊',
-      'volleyball': '🏐',
-      'badminton': '🏸',
-      'ping-pong': '🏓',
-      'golf': '⛳'
+      'course à pied': '🏃‍♂️',
+      'running': '🏃‍♂️',
+      'natation': '🏊‍♂️',
+      'swimming': '🏊‍♂️'
     }
-    return sportEmojis[sport.toLowerCase()] || '🏃'
+    return sportEmojis[sport.toLowerCase()] || '🏃‍♂️'
   }
 
   if (authLoading) {
@@ -205,6 +204,10 @@ const EventDetailPage = () => {
 
   const isOrganizer = eventStats.userRole === 'organisateur'
   const isParticipant = eventStats.userRole === 'participant'
+  
+  // Vérifier si l'événement est passé
+  const eventDate = EventService.convertFirestoreDate(event.date)
+  const isPastEvent = eventDate < new Date()
 
   return (
     <MainLayout>
@@ -349,7 +352,7 @@ const EventDetailPage = () => {
           )}
 
           {/* Bouton d'inscription ou statut */}
-          {!isOrganizer && !isParticipant && (
+          {!isOrganizer && !isParticipant && !isPastEvent && (
             <button 
               onClick={handleJoinEvent} 
               disabled={isJoining}
@@ -357,6 +360,16 @@ const EventDetailPage = () => {
             >
               {isJoining ? "Inscription en cours..." : "S'inscrire à l'événement"}
             </button>
+          )}
+          
+          {/* Message pour événement passé */}
+          {isPastEvent && !isOrganizer && !isParticipant && (
+            <div className={styles.pastEventMessage}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z" clipRule="evenodd" />
+              </svg>
+              Cet événement est terminé - Inscription fermée
+            </div>
           )}
 
           {(isOrganizer || isParticipant) && (
@@ -368,14 +381,24 @@ const EventDetailPage = () => {
             </div>
           )}
 
-          {/* Messages Section */}
-          {(isOrganizer || isParticipant) && (
+          {/* Messages Section - Bloqué pour événements passés */}
+          {(isOrganizer || isParticipant) && !isPastEvent && (
             <div className={styles.messagesSection}>
               <EventChat 
                 eventId={eventId} 
                 isOrganizer={isOrganizer}
                 isParticipant={isParticipant}
               />
+            </div>
+          )}
+          
+          {/* Message pour événement passé - participants/organisateurs */}
+          {(isOrganizer || isParticipant) && isPastEvent && (
+            <div className={styles.pastEventChatMessage}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.678 3.348-3.97Z" clipRule="evenodd" />
+              </svg>
+              Les messages sont désactivés pour cet événement terminé
             </div>
           )}
         </div>

@@ -375,9 +375,14 @@ export class EventService {
       return firestoreDate
     }
     
-    // Si c'est un timestamp Firestore
-    if (firestoreDate.seconds) {
+    // Si c'est un timestamp Firestore avec seconds
+    if (firestoreDate && typeof firestoreDate === 'object' && 'seconds' in firestoreDate) {
       return new Date(firestoreDate.seconds * 1000)
+    }
+    
+    // Si c'est un objet avec _seconds (autre format Firestore)
+    if (firestoreDate && typeof firestoreDate === 'object' && '_seconds' in firestoreDate) {
+      return new Date(firestoreDate._seconds * 1000)
     }
     
     // Si c'est une string ISO
@@ -385,46 +390,30 @@ export class EventService {
       return new Date(firestoreDate)
     }
     
-    return new Date()
+    // Si c'est un nombre (timestamp en millisecondes)
+    if (typeof firestoreDate === 'number') {
+      return new Date(firestoreDate)
+    }
+    
+    // Fallback
+    try {
+      return new Date(firestoreDate)
+    } catch (error) {
+      console.error('Erreur conversion date:', error)
+      return new Date()
+    }
   }
 
   // Formater une date pour l'affichage
   static formatEventDate(date: any): string {
     try {
-      // Si c'est déjà un objet Date
-      if (date instanceof Date) {
-        return date.toLocaleDateString('fr-FR', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })
-      }
-      
-      // Si c'est un timestamp Firestore
-      if (date && typeof date === 'object' && (date.seconds || date._seconds)) {
-        const seconds = date.seconds || date._seconds
-        const jsDate = new Date(seconds * 1000)
-        return jsDate.toLocaleDateString('fr-FR', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })
-      }
-      
-      // Si c'est une string ISO
-      if (typeof date === 'string') {
-        const jsDate = new Date(date)
-        return jsDate.toLocaleDateString('fr-FR', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })
-      }
-      
-      return 'Date non disponible'
+      const jsDate = this.convertFirestoreDate(date)
+      return jsDate.toLocaleDateString('fr-FR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
     } catch (error) {
       console.error('Erreur formatage date:', error)
       return 'Date invalide'
@@ -434,34 +423,11 @@ export class EventService {
   // Formater l'heure pour l'affichage
   static formatEventTime(date: any): string {
     try {
-      // Si c'est déjà un objet Date
-      if (date instanceof Date) {
-        return date.toLocaleTimeString('fr-FR', {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      }
-      
-      // Si c'est un timestamp Firestore
-      if (date && typeof date === 'object' && (date.seconds || date._seconds)) {
-        const seconds = date.seconds || date._seconds
-        const jsDate = new Date(seconds * 1000)
-        return jsDate.toLocaleTimeString('fr-FR', {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      }
-      
-      // Si c'est une string ISO
-      if (typeof date === 'string') {
-        const jsDate = new Date(date)
-        return jsDate.toLocaleTimeString('fr-FR', {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      }
-      
-      return '--:--'
+      const jsDate = this.convertFirestoreDate(date)
+      return jsDate.toLocaleTimeString('fr-FR', {
+        hour: '2-digit',
+        minute: '2-digit'
+      })
     } catch (error) {
       console.error('Erreur formatage heure:', error)
       return '--:--'

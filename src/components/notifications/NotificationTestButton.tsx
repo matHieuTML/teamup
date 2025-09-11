@@ -232,16 +232,6 @@ export function NotificationTestButton({ user }: NotificationTestButtonProps) {
         )}
       </div>
 
-      <div className={styles.info}>
-        <p className={styles.infoText}>
-          💡 <strong>Astuce :</strong> Si vous ne recevez pas la notification, vérifiez que :
-        </p>
-        <ul className={styles.infoList}>
-          <li>Les notifications sont autorisées dans votre navigateur</li>
-          <li>TeamUp n'est pas en mode "Ne pas déranger"</li>
-          <li>Votre connexion internet est stable</li>
-        </ul>
-      </div>
     </div>
   )
 }

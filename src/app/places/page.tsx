@@ -44,10 +44,13 @@ export default function PlacesPage() {
   
   const [createdEvents, setCreatedEvents] = useState<CreatedEvent[]>([])
   const [joinedEvents, setJoinedEvents] = useState<UserEvent[]>([])
+  const [pastCreatedEvents, setPastCreatedEvents] = useState<CreatedEvent[]>([])
+  const [pastJoinedEvents, setPastJoinedEvents] = useState<UserEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [isOfflineMode, setIsOfflineMode] = useState(false)
+  const [showPastEvents, setShowPastEvents] = useState(false)
 
   const loadUserEvents = useCallback(async () => {
     if (!user) return
@@ -64,8 +67,34 @@ export default function PlacesPage() {
           EventService.getUserParticipations(user.uid)
         ])
         
-        setCreatedEvents(created)
-        setJoinedEvents(joined.filter(ue => ue.role !== 'organisateur'))
+        // Séparer les événements futurs et passés
+        const now = new Date()
+        
+        const futureCreated = created.filter(event => {
+          const eventDate = EventService.convertFirestoreDate(event.date)
+          return eventDate >= now
+        })
+        
+        const pastCreated = created.filter(event => {
+          const eventDate = EventService.convertFirestoreDate(event.date)
+          return eventDate < now
+        })
+        
+        const filteredJoined = joined.filter(ue => ue.role !== 'organisateur')
+        const futureJoined = filteredJoined.filter(ue => {
+          const eventDate = EventService.convertFirestoreDate(ue.event.date)
+          return eventDate >= now
+        })
+        
+        const pastJoined = filteredJoined.filter(ue => {
+          const eventDate = EventService.convertFirestoreDate(ue.event.date)
+          return eventDate < now
+        })
+        
+        setCreatedEvents(futureCreated)
+        setJoinedEvents(futureJoined)
+        setPastCreatedEvents(pastCreated)
+        setPastJoinedEvents(pastJoined)
       } else {
         // Mode hors ligne : charger depuis le cache local
         const offlineCreated = OfflineEventsService.getOfflineCreatedEvents(user.uid)
@@ -253,17 +282,23 @@ export default function PlacesPage() {
   return (
     <MainLayout>
       <div className={styles.container}>
-        {/* Bouton hors ligne repositionné */}
+        {/* Section offline PWA */}
         {user && (
-          <div className={styles.offlineButtonContainer}>
-            <OfflineButton
-              userId={user.uid}
-              createdEvents={createdEvents}
-              joinedEvents={joinedEvents}
-              onDownloadComplete={() => {
-                console.log('Événements téléchargés pour l\'accès hors ligne')
-              }}
-            />
+          <div className={styles.offlineSection}>
+            <div className={styles.offlineSectionContent}>
+              <h3 className={styles.offlineTitle}>Accès hors ligne</h3>
+              <p className={styles.offlineDescription}>
+                Téléchargez vos événements pour y accéder sans connexion
+              </p>
+              <OfflineButton
+                userId={user.uid}
+                createdEvents={createdEvents}
+                joinedEvents={joinedEvents.map(ue => ue.event)}
+                onDownloadComplete={() => {
+                  console.log('Événements téléchargés pour l\'accès hors ligne')
+                }}
+              />
+            </div>
           </div>
         )}
 
@@ -450,6 +485,131 @@ export default function PlacesPage() {
                 </div>
               )}
             </section>
+
+            {/* Section événements passés - Menu déroulant */}
+            {(pastCreatedEvents.length > 0 || pastJoinedEvents.length > 0) && (
+              <section className={styles.pastEventsSection}>
+                <div className={styles.pastEventsHeader}>
+                  <button
+                    onClick={() => setShowPastEvents(!showPastEvents)}
+                    className={styles.pastEventsToggle}
+                    type="button"
+                  >
+                    <span className={styles.pastEventsIcon}>📅</span>
+                    <span className={styles.pastEventsTitle}>
+                      Événements passés ({pastCreatedEvents.length + pastJoinedEvents.length})
+                    </span>
+                    <span className={`${styles.chevron} ${showPastEvents ? styles.chevronUp : styles.chevronDown}`}>
+                      ▼
+                    </span>
+                  </button>
+                </div>
+
+                {showPastEvents && (
+                  <div className={styles.pastEventsContent}>
+                    {/* Événements passés créés */}
+                    {pastCreatedEvents.length > 0 && (
+                      <div className={styles.pastEventCategory}>
+                        <h3 className={styles.pastCategoryTitle}>
+                          <span className={styles.sectionIcon}>👑</span>
+                          Événements créés ({pastCreatedEvents.length})
+                        </h3>
+                        <div className={styles.pastEventGrid}>
+                          {pastCreatedEvents.map((event) => (
+                            <div key={event.id} className={styles.pastEventCard}>
+                              <div 
+                                className={styles.pastEventContent}
+                                onClick={() => navigateToEvent(event.id)}
+                              >
+                                <div className={styles.pastEventImage}>
+                                  {event.picture_url ? (
+                                    <img src={event.picture_url} alt={event.name} />
+                                  ) : (
+                                    <div className={styles.pastEventImagePlaceholder}>
+                                      <span className={styles.eventTypeIcon}>
+                                        {getEventIcon(event.type)}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                <div className={styles.pastEventInfo}>
+                                  <h4 className={styles.pastEventName}>{event.name}</h4>
+                                  <p className={styles.pastEventType}>
+                                    {getEventTypeDisplay(event.type)}
+                                  </p>
+                                  <p className={styles.pastEventLocation}>
+                                    📍 {event.location_name}
+                                  </p>
+                                  <div className={styles.pastEventDateTime}>
+                                    <span className={styles.pastEventDate}>
+                                      {formatDate(event.date)}
+                                    </span>
+                                    <span className={styles.pastEventTime}>
+                                      {formatTime(event.date)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Événements passés rejoints */}
+                    {pastJoinedEvents.length > 0 && (
+                      <div className={styles.pastEventCategory}>
+                        <h3 className={styles.pastCategoryTitle}>
+                          <span className={styles.sectionIcon}>✅</span>
+                          Événements rejoints ({pastJoinedEvents.length})
+                        </h3>
+                        <div className={styles.pastEventGrid}>
+                          {pastJoinedEvents.map((userEvent) => (
+                            <div key={userEvent.id} className={styles.pastEventCard}>
+                              <div 
+                                className={styles.pastEventContent}
+                                onClick={() => navigateToEvent(userEvent.event.id)}
+                              >
+                                <div className={styles.pastEventImage}>
+                                  {userEvent.event.picture_url ? (
+                                    <img src={userEvent.event.picture_url} alt={userEvent.event.name} />
+                                  ) : (
+                                    <div className={styles.pastEventImagePlaceholder}>
+                                      <span className={styles.eventTypeIcon}>
+                                        {getEventIcon(userEvent.event.type)}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                <div className={styles.pastEventInfo}>
+                                  <h4 className={styles.pastEventName}>{userEvent.event.name}</h4>
+                                  <p className={styles.pastEventType}>
+                                    {getEventTypeDisplay(userEvent.event.type)}
+                                  </p>
+                                  <p className={styles.pastEventLocation}>
+                                    📍 {userEvent.event.location_name}
+                                  </p>
+                                  <div className={styles.pastEventDateTime}>
+                                    <span className={styles.pastEventDate}>
+                                      {formatDate(userEvent.event.date)}
+                                    </span>
+                                    <span className={styles.pastEventTime}>
+                                      {formatTime(userEvent.event.date)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </section>
+            )}
           </div>
         )}
       </div>

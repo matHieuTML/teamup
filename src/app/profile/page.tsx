@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { MainLayout } from '@/components/layout'
 import { ProfileDisplay } from '@/components/profile/ProfileDisplay'
+import { ProfileSettings } from '@/components/profile/ProfileSettings'
 import { NotificationTestButton } from '@/components/notifications/NotificationTestButton'
 import { useAuthRedirect } from '@/hooks/useAuthRedirect'
 import { useAuth } from '@/contexts/AuthContext'
@@ -102,32 +103,38 @@ export default function ProfilePage() {
   return (
     <MainLayout>
       <div className={styles.container}>
+        {/* Header avec bouton settings sur mobile */}
+        <div className={styles.header}>
+          <h1 className={styles.pageTitle}>Mon Profil</h1>
+          <ProfileSettings className={styles.mobileSettingsButton} />
+        </div>
 
-
-        <div className={styles.content}>
-          {userProfile && (
-            <>
-              <ProfileDisplay 
-                user={userProfile}
-                onProfileUpdate={async (updates: Partial<User>) => {
-                  try {
-                    await userProfileService.updateUserProfile(authUser!.uid, updates)
-                    // Recharger le profil après mise à jour
-                    const updatedProfile = await userProfileService.getUserProfile(authUser!.uid)
-                    if (updatedProfile) {
-                      setUserProfile(updatedProfile)
+        <div className={styles.contentWrapper}>
+          <div className={styles.content}>
+            {userProfile && (
+              <>
+                <ProfileDisplay 
+                  user={userProfile}
+                  onProfileUpdate={async (updates: Partial<User>) => {
+                    try {
+                      await userProfileService.updateUserProfile(authUser!.uid, updates)
+                      // Recharger le profil après mise à jour
+                      const updatedProfile = await userProfileService.getUserProfile(authUser!.uid)
+                      if (updatedProfile) {
+                        setUserProfile(updatedProfile)
+                      }
+                    } catch (error) {
+                      console.error('Erreur lors de la mise à jour du profil:', error)
+                      throw error
                     }
-                  } catch (error) {
-                    console.error('Erreur lors de la mise à jour du profil:', error)
-                    throw error
-                  }
-                }}
-              />
-              
-              {/* Bouton de test des notifications push */}
-              <NotificationTestButton user={userProfile} />
-            </>
-          )}
+                  }}
+                />
+                
+                {/* Bouton de test des notifications push */}
+                <NotificationTestButton user={userProfile} />
+              </>
+            )}
+          </div>
         </div>
       </div>
     </MainLayout>

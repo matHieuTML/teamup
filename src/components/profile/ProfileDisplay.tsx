@@ -292,7 +292,7 @@ export function ProfileDisplay({ user, onProfileUpdate, className }: ProfileDisp
               </button>
             </div>
             <ProfilePictureUpload 
-              currentUrl={user.profile_picture_url}
+              currentPictureUrl={user.profile_picture_url}
               onUploadSuccess={(url) => {
                 onProfileUpdate({ profile_picture_url: url })
                 setIsEditingPicture(false)

@@ -22,7 +22,6 @@
 .hero-section__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom right, transparent, var(--color-mint-10), var(--color-green-10));
   opacity: 0.5;
 }
 

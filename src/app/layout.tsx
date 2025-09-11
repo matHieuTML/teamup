@@ -3,6 +3,14 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { PWAInstaller } from "@/components/pwa/PWAInstaller";
+import { ErrorBoundary } from "@/components/monitoring/ErrorBoundary";
+import { errorLogger } from '@/lib/monitoring/error-logger'
+
+// Initialiser le monitoring côté client
+if (typeof window !== 'undefined') {
+  // errorLogger est déjà l'instance singleton
+  void errorLogger
+}
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,10 +119,12 @@ export default function RootLayout({
   return (
     <html lang="fr" data-scroll-behavior="smooth">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AuthProvider>
-          {children}
-          <PWAInstaller />
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            {children}
+            <PWAInstaller />
+          </AuthProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

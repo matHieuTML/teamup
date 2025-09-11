@@ -1,12 +1,61 @@
-/* Profile Page - Design system TeamUp */
+/* Profile Page - Design system/* Profile Page Styles */
 
 .container {
   min-height: 100vh;
-  background: var(--color-white);
-  position: relative;
+  padding: 20px;
+  background: var(--color-background);
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
+.pageTitle {
+  font-size: 28px;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.mobileSettingsButton {
+  /* Styles spécifiques pour le bouton mobile dans le header */
+}
+
+.contentWrapper {
+  display: flex;
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+.content {
+  flex: 1;
+  max-width: 600px;
+}
+
+/* Mobile: Stack vertical */
+@media (max-width: 1023px) {
+  .contentWrapper {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .content {
+    max-width: none;
+  }
+  
+  .pageTitle {
+    font-size: 24px;
+  }
+}
 
 /* Contenu principal */
 .content {

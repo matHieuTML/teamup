@@ -59,23 +59,36 @@ class UserProfileService {
 
   // Méthodes statiques conservées pour compatibilité
   static createSportPreference(sport: SportType, level: SportLevel): SportPreference {
-    return profileApiService.createSportPreference(sport, level)
+    return { sport, level }
   }
 
   static getAllSportTypes(): SportType[] {
-    return profileApiService.getAllSportTypes() as SportType[]
+    return Object.values(SportType)
   }
 
   static getAllSportLevels(): SportLevel[] {
-    return profileApiService.getAllSportLevels() as SportLevel[]
+    return Object.values(SportLevel)
   }
 
   static getSportDisplayName(sport: SportType): string {
-    return profileApiService.getSportDisplayName(sport)
+    const displayNames = {
+      [SportType.FOOT]: 'Football',
+      [SportType.COURSE]: 'Course à pied',
+      [SportType.TENNIS]: 'Tennis',
+      [SportType.BASKET]: 'Basketball',
+      [SportType.NATATION]: 'Natation'
+    }
+    return displayNames[sport] || sport
   }
 
   static getLevelDisplayName(level: SportLevel): string {
-    return profileApiService.getLevelDisplayName(level)
+    const displayNames = {
+      [SportLevel.DEBUTANT]: 'Débutant',
+      [SportLevel.INTERMEDIAIRE]: 'Intermédiaire',
+      [SportLevel.CONFIRME]: 'Confirmé',
+      [SportLevel.EXPERT]: 'Expert'
+    }
+    return displayNames[level] || level
   }
 
   // Fonctions non implémentées côté API pour l'instant (nécessitent une extension future)

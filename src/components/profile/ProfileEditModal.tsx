@@ -15,7 +15,7 @@ export function ProfileEditModal({ user, onSave, onClose }: ProfileEditModalProp
     name: user.name || '',
     location: user.location || '',
     birth_date: user.birth_date ? 
-      (typeof user.birth_date === 'string' ? user.birth_date.split('T')[0] : 
+      (typeof user.birth_date === 'string' ? (user.birth_date as string).split('T')[0] : 
        user.birth_date instanceof Date ? user.birth_date.toISOString().split('T')[0] : '') : '',
     notifications_enabled: user.notifications_enabled ?? true
   })

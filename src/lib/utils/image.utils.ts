@@ -245,7 +245,7 @@ export class ImageUtils {
   static readonly VALIDATION_RULES = {
     PROFILE_PICTURE: {
       maxSizeBytes: 2 * 1024 * 1024, // 2MB
-      allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
+      allowedTypes: ['image/jpeg', 'image/png', 'image/webp'] as string[],
       minWidth: 150,
       minHeight: 150,
       maxWidth: 2000,
@@ -253,13 +253,13 @@ export class ImageUtils {
     },
     EVENT_IMAGE: {
       maxSizeBytes: 8 * 1024 * 1024, // 8MB
-      allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
+      allowedTypes: ['image/jpeg', 'image/png', 'image/webp'] as string[],
       minWidth: 400,
       minHeight: 300
     },
     GENERAL: {
       maxSizeBytes: 5 * 1024 * 1024, // 5MB
-      allowedTypes: ['image/jpeg', 'image/png', 'image/webp']
+      allowedTypes: ['image/jpeg', 'image/png', 'image/webp'] as string[]
     }
   } as const
 

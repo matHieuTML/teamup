@@ -1,20 +1,22 @@
 // Service Worker basique pour TeamUp PWA
-declare const self: ServiceWorkerGlobalScope
+/// <reference lib="webworker" />
+
+const sw = self as unknown as ServiceWorkerGlobalScope
 
 // Installation du SW
-self.addEventListener('install', (event) => {
+sw.addEventListener('install', (event: ExtendableEvent) => {
   console.log('Service Worker: Installation')
-  self.skipWaiting()
+  sw.skipWaiting()
 })
 
 // Activation du SW
-self.addEventListener('activate', (event) => {
+sw.addEventListener('activate', (event: ExtendableEvent) => {
   console.log('Service Worker: Activation')
-  event.waitUntil(self.clients.claim())
+  event.waitUntil(sw.clients.claim())
 })
 
 // Cache basique pour les assets
-self.addEventListener('fetch', (event) => {
+sw.addEventListener('fetch', (event: FetchEvent) => {
   if (event.request.method !== 'GET') return
 
   event.respondWith(

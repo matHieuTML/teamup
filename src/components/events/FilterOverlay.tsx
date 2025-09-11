@@ -157,15 +157,20 @@ export function FilterOverlay({
               Niveau
             </h4>
             <div className={styles.levelButtons}>
-              {['débutant', 'intermédiaire', 'avancé', 'expert'].map((level) => (
+              {[
+                { value: 'debutant', label: 'Débutant' },
+                { value: 'intermediaire', label: 'Intermédiaire' },
+                { value: 'confirme', label: 'Confirmé' },
+                { value: 'expert', label: 'Expert' }
+              ].map(({ value, label }) => (
                 <button
-                  key={level}
+                  key={value}
                   className={`${styles.levelButton} ${
-                    filters.level === level ? styles.active : ''
-                  } ${styles[`level${level.charAt(0).toUpperCase() + level.slice(1)}`]}`}
-                  onClick={() => handleLevelChange(level)}
+                    filters.level === value ? styles.active : ''
+                  } ${styles[`level${label}`]}`}
+                  onClick={() => handleLevelChange(value)}
                 >
-                  {level.charAt(0).toUpperCase() + level.slice(1)}
+                  {label}
                 </button>
               ))}
             </div>

@@ -1,9 +1,7 @@
 import { z } from 'zod'
 
 // Types d'upload autorisés
-export const UploadTypeSchema = z.enum(['profile-picture', 'event-image', 'general'], {
-  errorMap: () => ({ message: 'Type d\'upload non valide' })
-})
+export const UploadTypeSchema = z.enum(['profile-picture', 'event-image', 'general'])
 
 // Types MIME autorisés pour les images
 export const AllowedImageTypesSchema = z.enum([
@@ -11,9 +9,7 @@ export const AllowedImageTypesSchema = z.enum([
   'image/jpg', 
   'image/png',
   'image/webp'
-], {
-  errorMap: () => ({ message: 'Type de fichier non autorisé' })
-})
+])
 
 // Extensions de fichier autorisées
 export const AllowedExtensionsSchema = z.enum([
@@ -21,9 +17,7 @@ export const AllowedExtensionsSchema = z.enum([
   'jpeg',
   'png',
   'webp'
-], {
-  errorMap: () => ({ message: 'Extension de fichier non autorisée' })
-})
+])
 
 // Schéma pour la validation d'un fichier côté client
 export const FileValidationSchema = z.object({
@@ -120,7 +114,7 @@ export const UploadErrorSchema = z.object({
     'PERMISSION_DENIED'
   ]),
   message: z.string(),
-  details: z.record(z.unknown()).optional()
+  details: z.record(z.string(), z.unknown()).optional()
 })
 
 // Types TypeScript dérivés des schémas

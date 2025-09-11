@@ -1,20 +1,14 @@
 import { z } from 'zod'
 
 // Énumérations pour les sports et niveaux
-export const SportTypeSchema = z.enum(['foot', 'course', 'tennis', 'basket', 'natation'], {
-  errorMap: () => ({ message: 'Sport non valide' })
-})
+export const SportTypeSchema = z.enum(['foot', 'course', 'tennis', 'basket', 'natation'])
 
-export const SportLevelSchema = z.enum(['debutant', 'intermediaire', 'confirme', 'expert'], {
-  errorMap: () => ({ message: 'Niveau non valide' })
-})
+export const SportLevelSchema = z.enum(['debutant', 'intermediaire', 'confirme', 'expert'])
 
 // Schéma pour une préférence sportive
 export const SportPreferenceSchema = z.object({
   sport: SportTypeSchema,
   level: SportLevelSchema
-}, {
-  errorMap: () => ({ message: 'Préférence sportive invalide' })
 })
 
 // Schéma pour la création d'un profil utilisateur

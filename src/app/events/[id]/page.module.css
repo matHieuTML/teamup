@@ -233,6 +233,44 @@
   height: 1.25rem;
 }
 
+.pastEventMessage {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 12px;
+  color: #dc2626;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+.pastEventMessage svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  color: #dc2626;
+}
+
+.pastEventChatMessage {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: rgba(107, 114, 128, 0.1);
+  border: 1px solid rgba(107, 114, 128, 0.2);
+  border-radius: 12px;
+  color: #6b7280;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+.pastEventChatMessage svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  color: #6b7280;
+}
+
 .messagesSection {
   margin-top: 2rem;
 }

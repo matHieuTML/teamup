@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { RegisterFormData } from '@/types/database'
+import { RegisterFormData } from '@/types/forms'
+import Link from 'next/link'
 import '../../styles/components/auth-forms.css'
 
 interface RegisterFormProps {
@@ -14,9 +15,11 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [formData, setFormData] = useState<RegisterFormData>({
     email: '',
     password: '',
-    name: ''
+    name: '',
+    confirmPassword: ''
   })
   const [formError, setFormError] = useState<string | null>(null)
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,6 +32,11 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
     if (formData.password.length < 6) {
       setFormError('Le mot de passe doit contenir au moins 6 caractères')
+      return
+    }
+
+    if (!acceptedTerms) {
+      setFormError('Vous devez accepter les conditions d\'utilisation')
       return
     }
 
@@ -107,9 +115,27 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         </div>
       </div>
 
+      <div className="auth-form__field auth-form__checkbox-field">
+        <label className="auth-form__checkbox-label">
+          <input
+            type="checkbox"
+            checked={acceptedTerms}
+            onChange={(e) => setAcceptedTerms(e.target.checked)}
+            className="auth-form__checkbox"
+            required
+          />
+          <span className="auth-form__checkbox-text">
+            J&apos;accepte les{' '}
+            <Link href="/conditions-utilisation" className="auth-form__link">
+              conditions d&apos;utilisation
+            </Link>
+          </span>
+        </label>
+      </div>
+
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || !acceptedTerms}
         className="auth-form__submit"
       >
         {loading ? 'Inscription...' : 'S\'inscrire'}

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { BottomNavigation } from '../navigation'
+import { BottomNavigation, TopNavigation } from '../navigation'
 import '../../styles/layout/layouts.css'
 
 interface MainLayoutProps {
@@ -12,6 +12,8 @@ interface MainLayoutProps {
 const MainLayout = ({ children, className = '' }: MainLayoutProps) => {
   return (
     <div className={`main-layout ${className}`}>
+      <TopNavigation />
+      
       <main className="main-layout__main">
         {children}
       </main>

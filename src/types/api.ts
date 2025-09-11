@@ -51,7 +51,7 @@ export interface MessageRequest {
   content: string
 }
 
-export interface AuthUser {
+export interface ApiAuthUser {
   uid: string
   email: string | null
   displayName: string | null

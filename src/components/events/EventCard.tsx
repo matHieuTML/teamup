@@ -10,6 +10,12 @@ import styles from './EventCard.module.css'
 interface EventCardProps {
   event: Event & {
     participants_count?: number
+    participants?: Array<{
+      id: string
+      name: string
+      role: string
+      profile_picture_url?: string | null
+    }>
   }
 }
 
@@ -17,6 +23,27 @@ export function EventCard({ event }: EventCardProps) {
   const eventDate = EventService.convertFirestoreDate(event.date)
   const isPast = eventDate < new Date()
   const participantsCount = event.participants_count || 0
+  const participants = event.participants || []
+
+  // Debug: Log des données pour diagnostic
+  console.log('🔍 EventCard Debug:', {
+    eventId: event.id,
+    eventName: event.name,
+    participantsCount,
+    participants,
+    participantsLength: participants.length
+  })
+
+  // Fonction pour obtenir les initiales d'un nom
+  const getInitials = (name: string): string => {
+    const initials = name
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase())
+      .slice(0, 2)
+      .join('')
+    console.log(`🔍 getInitials("${name}") = "${initials}"`)
+    return initials
+  }
 
   const getStatusBadge = () => {
     if (isPast) {
@@ -70,17 +97,49 @@ export function EventCard({ event }: EventCardProps) {
           {event.location_name}
         </div>
 
+        <div className={styles.dateTime}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          {EventService.formatEventDate(event.date)} à {EventService.formatEventTime(event.date)}
+        </div>
+
         <div className={styles.participantsRow}>
           <div className={styles.participantsInfo}>
             <div className={styles.avatars}>
-              {[...Array(Math.min(3, participantsCount))].map((_, i) => (
-                <div key={i} className={`${styles.avatar} ${styles[`avatar${i + 1}`]}`}>
-                  {String.fromCharCode(65 + i)}
-                </div>
-              ))}
-              {participantsCount > 3 && (
-                <div className={`${styles.avatar} ${styles.avatarExtra}`}>
-                  +{participantsCount - 3}
+              {participants.length > 0 ? (
+                <>
+                  {participants.slice(0, 3).map((participant, i) => {
+                    console.log(`🔍 Rendering avatar ${i + 1}:`, participant.name, participant.profile_picture_url)
+                    return (
+                      <div key={participant.id} className={`${styles.avatar} ${styles[`avatar${i + 1}`]}`}>
+                        {participant.profile_picture_url ? (
+                          <Image
+                            src={participant.profile_picture_url}
+                            alt={participant.name}
+                            width={24}
+                            height={24}
+                            className={styles.avatarImage}
+                          />
+                        ) : (
+                          getInitials(participant.name)
+                        )}
+                      </div>
+                    )
+                  })}
+                  {participantsCount > 3 && (
+                    <div className={`${styles.avatar} ${styles.avatarExtra}`}>
+                      +{participantsCount - 3}
+                    </div>
+                  )}
+                </>
+              ) : (
+                // Fallback si pas de participants
+                <div className={`${styles.avatar} ${styles.avatar1}`}>
+                  ?
                 </div>
               )}
             </div>

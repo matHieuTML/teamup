@@ -39,11 +39,11 @@ export function EventChat({ eventId, isOrganizer, isParticipant }: EventChatProp
         const dateA = a.time instanceof Date ? a.time : 
           (a.time && typeof a.time === 'object' && (a.time.seconds || (a.time as any)._seconds)) ? 
             new Date((a.time.seconds || (a.time as any)._seconds) * 1000) : 
-            new Date(a.time || 0)
+            new Date(a.time as string || 0)
         const dateB = b.time instanceof Date ? b.time : 
           (b.time && typeof b.time === 'object' && (b.time.seconds || (b.time as any)._seconds)) ? 
             new Date((b.time.seconds || (b.time as any)._seconds) * 1000) : 
-            new Date(b.time || 0)
+            new Date(b.time as string || 0)
         return dateA.getTime() - dateB.getTime()
       })
       

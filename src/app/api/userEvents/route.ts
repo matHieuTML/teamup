@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDB } from '@/lib/firebase-admin'
 import { UserEventRole } from '@/types/database'
+import { FieldValue } from 'firebase-admin/firestore'
 
 // GET - Récupérer les inscriptions (utilisateurs d'un événement ou événements d'un utilisateur)
 export async function GET(request: NextRequest) {
@@ -144,7 +145,7 @@ export async function POST(request: NextRequest) {
 
     // Incrémenter le compteur d'événements rejoints de l'utilisateur
     await adminDB.collection('users').doc(id_user).update({
-      number_event_joined: adminDB.FieldValue.increment(1),
+      number_event_joined: FieldValue.increment(1),
       updated_at: new Date()
     })
 
@@ -254,7 +255,7 @@ export async function DELETE(request: NextRequest) {
 
     // Décrémenter le compteur d'événements rejoints de l'utilisateur
     await adminDB.collection('users').doc(userId).update({
-      number_event_joined: adminDB.FieldValue.increment(-1),
+      number_event_joined: FieldValue.increment(-1),
       updated_at: new Date()
     })
 

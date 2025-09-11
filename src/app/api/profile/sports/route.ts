@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from 'firebase-admin/auth'
+import { getAuth } from 'firebase-admin/auth'
 import { initializeApp, getApps, cert } from 'firebase-admin/app'
 import { userProfileService } from '@/lib/services/user-profile.service'
+import { SportPreference, SportType, SportLevel } from '@/types/database'
 import { z } from 'zod'
 
 // Initialisation Firebase Admin SDK si pas encore fait
@@ -20,18 +21,17 @@ if (getApps().length === 0) {
   }
 }
 
+// Schémas de validation
+const SportSchema = z.nativeEnum(SportType)
+const LevelSchema = z.nativeEnum(SportLevel)
+const SportPreferenceSchema = z.object({
+  sport: SportSchema,
+  level: LevelSchema
+})
+
 // Schéma de validation pour les préférences sportives
 const sportsPreferencesSchema = z.object({
-  sports_preferences: z.array(z.object({
-    sport: z.enum(['foot', 'course', 'tennis', 'basket', 'natation'], {
-      errorMap: () => ({ message: 'Sport non valide' })
-    }),
-    level: z.enum(['debutant', 'intermediaire', 'confirme', 'expert'], {
-      errorMap: () => ({ message: 'Niveau non valide' })
-    })
-  }), {
-    errorMap: () => ({ message: 'Liste de sports requise' })
-  }).max(5, 'Maximum 5 sports autorisés')
+  sports_preferences: z.array(SportPreferenceSchema).max(5, 'Maximum 5 sports autorisés')
 })
 
 // PATCH /api/profile/sports - Mettre à jour les préférences sportives
@@ -50,7 +50,7 @@ export async function PATCH(request: NextRequest) {
     
     let decodedToken
     try {
-      decodedToken = await auth().verifyIdToken(token)
+      decodedToken = await getAuth().verifyIdToken(token)
     } catch (error) {
       console.error('Erreur de vérification du token:', error)
       return NextResponse.json(
@@ -98,13 +98,13 @@ export async function PATCH(request: NextRequest) {
         )
       }
 
-      // Mise à jour des préférences sportives
-      await userProfileService.updateSportsPreferences(userId, sports_preferences)
+      // Mettre à jour les préférences sportives
+      await userProfileService.updateSportsPreferences(userId, validationResult.data.sports_preferences)
 
       return NextResponse.json({
         success: true,
         data: {
-          sports_preferences,
+          sports_preferences: validationResult.data.sports_preferences,
           updated_at: new Date().toISOString()
         },
         message: 'Préférences sportives mises à jour avec succès'
@@ -142,7 +142,7 @@ export async function GET(request: NextRequest) {
     const token = authHeader.replace('Bearer ', '')
     
     try {
-      await auth().verifyIdToken(token)
+      await getAuth().verifyIdToken(token)
     } catch (error) {
       console.error('Erreur de vérification du token:', error)
       return NextResponse.json(
@@ -152,14 +152,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Retourner les informations sur les sports disponibles
-    const availableSports = userProfileService.getAllSportTypes().map(sport => ({
-      type: sport,
-      displayName: userProfileService.getSportDisplayName(sport)
+    const availableSports = ['foot', 'course', 'tennis', 'basket', 'natation'].map((sport: string) => ({
+      id: sport,
+      name: sport
     }))
-
-    const availableLevels = userProfileService.getAllSportLevels().map(level => ({
-      type: level,
-      displayName: userProfileService.getLevelDisplayName(level)
+    const availableLevels = ['debutant', 'intermediaire', 'confirme', 'expert'].map((level: string) => ({
+      id: level,
+      name: level
     }))
 
     return NextResponse.json({
@@ -196,7 +195,7 @@ export async function POST(request: NextRequest) {
     
     let decodedToken
     try {
-      decodedToken = await auth().verifyIdToken(token)
+      decodedToken = await getAuth().verifyIdToken(token)
     } catch (error) {
       console.error('Erreur de vérification du token:', error)
       return NextResponse.json(
@@ -209,10 +208,11 @@ export async function POST(request: NextRequest) {
 
     // Validation du sport à ajouter
     const body = await request.json()
-    const sportToAdd = z.object({
-      sport: z.enum(['foot', 'course', 'tennis', 'basket', 'natation']),
-      level: z.enum(['debutant', 'intermediaire', 'confirme', 'expert'])
-    }).safeParse(body)
+    const sportSchema = z.object({
+      sport: z.nativeEnum(SportType),
+      level: z.nativeEnum(SportLevel)
+    })
+    const sportToAdd = sportSchema.safeParse(body)
 
     if (!sportToAdd.success) {
       return NextResponse.json(
@@ -256,7 +256,7 @@ export async function POST(request: NextRequest) {
 
       // Ajout du nouveau sport
       const updatedSports = [...userProfile.sports_preferences, sportToAdd.data]
-      await userProfileService.updateSportsPreferences(userId, updatedSports)
+      await userProfileService.updateSportsPreferences(userId, updatedSports as SportPreference[])
 
       return NextResponse.json({
         success: true,
@@ -264,7 +264,7 @@ export async function POST(request: NextRequest) {
           sports_preferences: updatedSports,
           added_sport: sportToAdd.data
         },
-        message: `${userProfileService.getSportDisplayName(sportToAdd.data.sport)} ajouté à vos préférences`
+        message: `Sport ajouté à vos préférences`
       })
 
     } catch (serviceError) {

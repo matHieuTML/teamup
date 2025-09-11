@@ -159,9 +159,9 @@ export function EventsSearch({ filters, onFiltersChange, isLoading = false }: Ev
               disabled={isLoading}
             >
               <option value="all">Tous</option>
-              <option value="débutant">Débutant</option>
-              <option value="intermédiaire">Inter.</option>
-              <option value="avancé">Avancé</option>
+              <option value="debutant">Débutant</option>
+              <option value="intermediaire">Intermédiaire</option>
+              <option value="confirme">Confirmé</option>
               <option value="expert">Expert</option>
             </select>
           </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import styles from './PWAInstaller.module.css'
 
 interface BeforeInstallPromptEvent extends Event {
@@ -16,6 +17,7 @@ export function PWAInstaller() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showInstallButton, setShowInstallButton] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     // Register service worker
@@ -57,8 +59,12 @@ export function PWAInstaller() {
       e.preventDefault()
       const promptEvent = e as BeforeInstallPromptEvent
       setDeferredPrompt(promptEvent)
-      setShowInstallButton(true)
-      console.log('PWA: Install prompt available')
+      
+      // Delay showing the button to ensure proper detection
+      setTimeout(() => {
+        setShowInstallButton(true)
+        console.log('PWA: Install prompt available')
+      }, 1000)
     }
 
     // Listen for app installed event
@@ -80,11 +86,15 @@ export function PWAInstaller() {
       }
     }
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-    window.addEventListener('appinstalled', handleAppInstalled)
+    // Add a small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+      window.addEventListener('appinstalled', handleAppInstalled)
+    }, 500)
 
     // Cleanup
     return () => {
+      clearTimeout(timer)
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
       window.removeEventListener('appinstalled', handleAppInstalled)
     }
@@ -129,8 +139,17 @@ export function PWAInstaller() {
     return null // Don't show for 7 days after dismissal
   }
 
+  // On mobile, only show on home page
+  const isHomePage = pathname === '/'
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+  
+  // Hide on mobile if not on home page
+  if (isMobile && !isHomePage) {
+    return null
+  }
+
   return (
-    <div className={styles.installBanner}>
+    <div className={`${styles.installBanner} ${isHomePage && isMobile ? styles.mobileTop : ''}`}>
       <div className={styles.installContent}>
         <div className={styles.installIcon}>📱</div>
         <div className={styles.installText}>

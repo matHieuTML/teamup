@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
         let userData = null
         if (messageData.id_user) {
           try {
-            const userDoc = await adminDB.collection('users').doc(messageData.id_user).get()
+            const userDoc = await adminDB!.collection('users').doc(messageData.id_user).get()
             if (userDoc.exists) {
               const user = userDoc.data()
               userData = {

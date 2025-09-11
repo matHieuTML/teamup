@@ -90,6 +90,47 @@
   font-family: var(--font-body);
 }
 
+.auth-form__checkbox-field {
+  margin-bottom: 1.5rem;
+}
+
+.auth-form__checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-black);
+  font-family: var(--font-body);
+}
+
+.auth-form__checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.auth-form__checkbox-text {
+  flex: 1;
+}
+
+.auth-form__link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+}
+
+.auth-form__link:hover {
+  color: var(--color-secondary);
+  text-decoration: none;
+}
+
 /* Tablet styles */
 @media (min-width: 768px) {
   .auth-form {

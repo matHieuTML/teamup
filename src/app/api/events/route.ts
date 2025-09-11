@@ -54,16 +54,10 @@ export async function GET(request: NextRequest) {
           return dateA.getTime() - dateB.getTime()
         })
       } else {
-        // Requête pour tous les événements publics
-        let queryRef = adminDB.collection('events')
-
-        // Filtrer par type de sport si spécifié
-        if (sportType) {
-          queryRef = queryRef.where('type', '==', sportType)
-        }
-
-        // Ordonner par date et limiter
-        const finalQuery = queryRef.orderBy('date', 'asc').limit(limit * 2)
+        // Requête pour tous les événements publics avec filtrage conditionnel
+        const finalQuery = sportType 
+          ? adminDB.collection('events').where('type', '==', sportType).orderBy('date', 'asc').limit(limit * 2)
+          : adminDB.collection('events').orderBy('date', 'asc').limit(limit * 2)
         const eventsSnapshot = await finalQuery.get()
 
         events = eventsSnapshot.docs.map(doc => ({
@@ -75,16 +69,63 @@ export async function GET(request: NextRequest) {
         events = events.filter(event => event.visibility === EventVisibility.PUBLIC || event.visibility === 'public')
       }
 
-      // Limiter après filtrage et tri
-      events = events.slice(0, limit)
+      // Enrichir avec le nombre de participants réel et leurs données
+      const eventsWithParticipants = await Promise.all(
+        events.map(async (event) => {
+          try {
+            // Récupérer les participants pour cet événement
+            const participantsSnapshot = await adminDB!
+              .collection('userEvents')
+              .where('id_event', '==', event.id)
+              .get()
+            
+            // Récupérer les données des participants (max 3 pour les avatars)
+            const participantsData = []
+            const participantsDocs = participantsSnapshot.docs.slice(0, 3)
+            
+            for (const doc of participantsDocs) {
+              const userEventData = doc.data()
+              try {
+                const userDoc = await adminDB!.collection('users').doc(userEventData.id_user).get()
+                if (userDoc.exists) {
+                  const userData = userDoc.data()
+                  participantsData.push({
+                    id: userEventData.id_user,
+                    name: userData?.name || userData?.displayName || 'Utilisateur',
+                    role: userEventData.role,
+                    profile_picture_url: userData?.profile_picture_url || null
+                  })
+                }
+              } catch (userError) {
+                console.error(`Erreur récupération utilisateur ${userEventData.id_user}:`, userError)
+              }
+            }
+            
+            return {
+              ...event,
+              participants_count: participantsSnapshot.size,
+              participants: participantsData
+            }
+          } catch (error) {
+            console.error(`Erreur comptage participants pour événement ${event.id}:`, error)
+            return {
+              ...event,
+              participants_count: 0,
+              participants: []
+            }
+          }
+        })
+      )
 
-      const total = events.length
-      const hasMore = events.length === limit
+      // Limiter après enrichissement
+      const finalEvents = eventsWithParticipants.slice(0, limit)
+      const total = finalEvents.length
+      const hasMore = finalEvents.length === limit
 
       return NextResponse.json({ 
         success: true, 
         data: {
-          events,
+          events: finalEvents,
           total,
           hasMore
         }
@@ -320,6 +361,7 @@ export async function DELETE(request: NextRequest) {
 
   } catch (error: unknown) {
     console.error('❌ Erreur DELETE /api/events:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : 'Une erreur inconnue est survenue'
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }

@@ -397,6 +397,11 @@ a {
 
 /* === FOCUS & ACCESSIBILITY === */
 *:focus {
+  outline: none;
+}
+
+/* Garder l'outline pour l'accessibilité clavier uniquement */
+*:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }

@@ -20,7 +20,7 @@ const NavItem = ({ id, label, icon: Icon, path, isPrimary = false }: NavItemProp
 
   if (isPrimary) {
     return (
-      <Link href={path} className="nav-item nav-item--primary">
+      <Link href={path as any} className="nav-item nav-item--primary">
         <div className="nav-item--primary-button">
           <Icon 
             size={26} 
@@ -36,7 +36,7 @@ const NavItem = ({ id, label, icon: Icon, path, isPrimary = false }: NavItemProp
   }
 
   return (
-    <Link href={path} className="nav-item nav-item--regular">
+    <Link href={path as any} className="nav-item nav-item--regular">
       {isActive && (
         <div className="nav-item__active-indicator" />
       )}

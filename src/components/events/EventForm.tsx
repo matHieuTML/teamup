@@ -261,7 +261,7 @@ export function EventForm({
                 <option value="">Tous niveaux</option>
                 <option value="debutant">Débutant</option>
                 <option value="intermediaire">Intermédiaire</option>
-                <option value="avance">Avancé</option>
+                <option value="confirme">Confirmé</option>
                 <option value="expert">Expert</option>
               </select>
             </div>

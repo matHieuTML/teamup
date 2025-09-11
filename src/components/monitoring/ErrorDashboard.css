@@ -1,0 +1,278 @@
+.error-dashboard {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.error-dashboard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.error-dashboard__title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2d3436;
+  margin: 0;
+}
+
+.error-dashboard__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.error-dashboard__button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.error-dashboard__button--refresh {
+  background-color: #9BD1C0;
+  color: white;
+}
+
+.error-dashboard__button--refresh:hover {
+  background-color: #7bc4b0;
+}
+
+.error-dashboard__button--clear {
+  background-color: #EA7F58;
+  color: white;
+}
+
+.error-dashboard__button--clear:hover {
+  background-color: #e66b47;
+}
+
+.error-dashboard__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error-dashboard__loading {
+  text-align: center;
+  padding: 40px;
+  color: #636e72;
+  font-size: 16px;
+}
+
+.error-dashboard__empty {
+  text-align: center;
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.error-dashboard__empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.error-dashboard__empty h3 {
+  color: #2d3436;
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.error-dashboard__empty p {
+  color: #636e72;
+  font-size: 16px;
+  margin: 0;
+}
+
+.error-dashboard__content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.error-dashboard__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.error-dashboard__item {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.error-dashboard__item:hover {
+  border-color: #9BD1C0;
+  box-shadow: 0 2px 8px rgba(155, 209, 192, 0.1);
+}
+
+.error-dashboard__item--selected {
+  border-color: #9BD1C0;
+  background-color: #f8fcfb;
+}
+
+.error-dashboard__item--error {
+  border-left: 4px solid #EA7F58;
+}
+
+.error-dashboard__item--warning {
+  border-left: 4px solid #ABC762;
+}
+
+.error-dashboard__item--info {
+  border-left: 4px solid #74b9ff;
+}
+
+.error-dashboard__item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.error-dashboard__item-message {
+  font-weight: 500;
+  color: #2d3436;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.error-dashboard__item-time {
+  font-size: 12px;
+  color: #636e72;
+  white-space: nowrap;
+}
+
+.error-dashboard__item-url {
+  font-size: 12px;
+  color: #74b9ff;
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.error-dashboard__detail {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.error-dashboard__detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  background: linear-gradient(135deg, #9BD1C0 0%, #ABC762 100%);
+  color: white;
+  border-radius: 8px 8px 0 0;
+}
+
+.error-dashboard__detail-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.error-dashboard__close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.error-dashboard__close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.error-dashboard__detail-content {
+  padding: 20px;
+}
+
+.error-dashboard__detail-field {
+  margin-bottom: 16px;
+}
+
+.error-dashboard__detail-field label {
+  display: block;
+  font-weight: 600;
+  color: #2d3436;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.error-dashboard__detail-value {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #2d3436;
+  word-break: break-word;
+}
+
+.error-dashboard__stack {
+  background: #2d3436;
+  color: #ddd;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .error-dashboard {
+    padding: 16px;
+  }
+  
+  .error-dashboard__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .error-dashboard__actions {
+    justify-content: center;
+  }
+  
+  .error-dashboard__content {
+    grid-template-columns: 1fr;
+  }
+  
+  .error-dashboard__detail {
+    position: relative;
+    top: auto;
+  }
+  
+  .error-dashboard__title {
+    font-size: 20px;
+    text-align: center;
+  }
+}

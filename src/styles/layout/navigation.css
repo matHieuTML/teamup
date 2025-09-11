@@ -212,7 +212,145 @@
 
 /* Desktop styles */
 @media (min-width: 1024px) {
-  .bottom-navigation__container {
-    max-width: 600px;
+  /* Hide bottom navigation on desktop */
+  .bottom-navigation {
+    display: none;
+  }
+}
+
+/* Top Navigation - Desktop Only */
+.top-navigation {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 16px 32px;
+  z-index: var(--z-fixed);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+}
+
+@media (min-width: 1024px) {
+  .top-navigation {
+    display: block;
+  }
+}
+
+.top-navigation__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.top-navigation__brand {
+  display: flex;
+  align-items: center;
+}
+
+.top-navigation__logo {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.top-navigation__logo-text {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.top-navigation__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Top Navigation Items */
+.top-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: var(--transition-smooth);
+  position: relative;
+  font-weight: 500;
+}
+
+.top-nav-item:hover {
+  background: var(--glass-bg-light);
+}
+
+.top-nav-item--active {
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-mint);
+}
+
+.top-nav-item__icon {
+  transition: var(--transition-smooth);
+}
+
+.top-nav-item__label {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-heading);
+  color: var(--color-text-primary);
+  transition: var(--transition-smooth);
+}
+
+.top-nav-item--active .top-nav-item__label {
+  color: var(--color-primary);
+}
+
+/* Primary button in top nav */
+.top-nav-item--primary {
+  background: var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: 12px 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.top-nav-item--primary:hover {
+  background: var(--color-secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.top-nav-item--primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-nav-item--primary-icon {
+  transition: var(--transition-smooth);
+}
+
+.top-nav-item--primary-label {
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  color: white;
+  margin-left: 8px;
+}
+
+/* Add top padding to body on desktop to account for fixed top nav */
+@media (min-width: 1024px) {
+  body {
+    padding-top: 80px;
   }
 }

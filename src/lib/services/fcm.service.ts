@@ -158,9 +158,9 @@ export class FCMService {
       }
     } catch (error) {
       console.error('🔔 FCM: ❌ EXCEPTION during token generation:')
-      console.error('🔔 FCM: Error type:', error.constructor.name)
-      console.error('🔔 FCM: Error message:', error.message)
-      console.error('🔔 FCM: Error code:', error.code)
+      console.error('🔔 FCM: Error type:', (error as any).constructor?.name)
+      console.error('🔔 FCM: Error message:', (error as any).message)
+      console.error('🔔 FCM: Error code:', (error as any).code)
       console.error('🔔 FCM: Full error:', error)
       console.log('🔔 FCM: ========== TOKEN GENERATION EXCEPTION ==========')
       return null
@@ -235,8 +235,8 @@ export class FCMService {
       }
     } catch (error) {
       console.error('🔔 FCM: ❌ EXCEPTION during token save:')
-      console.error('🔔 FCM: Error type:', error.constructor.name)
-      console.error('🔔 FCM: Error message:', error.message)
+      console.error('🔔 FCM: Error type:', (error as any).constructor?.name)
+      console.error('🔔 FCM: Error message:', (error as any).message)
       console.error('🔔 FCM: Full error:', error)
       console.log('🔔 FCM: ========== TOKEN SAVE EXCEPTION ==========')
       return false
@@ -339,7 +339,7 @@ export class FCMService {
         return false
       }
     } catch (error) {
-      console.error('🔔 FCM: Failed to send test notification', error)
+      console.error('🔔 FCM: Failed to send test notification', error as any)
       return false
     }
   }
@@ -424,7 +424,7 @@ export class FCMService {
       }
       
     } catch (error) {
-      console.error('🔔 FCM: ❌ Failed to create notification:', error)
+      console.error('🔔 FCM: ❌ Failed to create notification:', error as any)
       
       // Fallback : essayer avec options minimales
       console.log('🔔 FCM: Trying fallback notification...')

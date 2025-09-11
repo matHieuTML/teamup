@@ -101,6 +101,19 @@
   color: var(--color-black-70);
 }
 
+/* Mobile styles - show at top on home page only */
+.mobileTop {
+  position: fixed;
+  top: 20px;
+  bottom: auto;
+  left: 10px;
+  right: 10px;
+  z-index: 1001;
+  animation: slideDown 0.3s ease-out;
+  height: auto;
+  max-height: 80px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .installBanner {
