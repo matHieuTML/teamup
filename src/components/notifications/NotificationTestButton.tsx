@@ -152,6 +152,15 @@ export function NotificationTestButton({ user }: NotificationTestButtonProps) {
         console.log('🔔 TEST: Test notification sent successfully ✅')
         setMessage('🎉 Notification de test envoyée avec succès !')
         setMessageType('success')
+        
+        // Afficher aussi une notification locale pour confirmation immédiate
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification('TeamUp - Test de notification', {
+            body: 'Vos notifications push fonctionnent correctement ! 🎉',
+            icon: '/images/logo/ios/192.png',
+            tag: 'teamup-test'
+          })
+        }
       } else {
         console.error('🔔 TEST: Test notification failed:', data.error)
         setMessage(`Erreur: ${data.error || 'Échec de l&apos;envoi'}`)
